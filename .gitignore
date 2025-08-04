@@ -1,0 +1,19 @@
+# Build Artifacts (keeping CSS for distribution)
+dnd5e-compiled*
+dnd5e.lock
+# Include compiled packs for distribution
+!packs/*
+
+# IDE
+.idea/
+.nova/
+.vs/
+.vscode/
+*.code-workspace
+*.iml
+
+# Node Modules
+node_modules/
+
+# OS Specific
+.DS_Store
