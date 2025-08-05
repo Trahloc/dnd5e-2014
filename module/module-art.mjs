@@ -55,7 +55,7 @@ export class ModuleArt {
    * @returns {Promise<void>}
    */
   async #parseArtMapping(moduleId, mapping, credit) {
-    let settings = game.settings.get("dnd5e", "moduleArtConfiguration")?.[moduleId];
+    let settings = game.settings.get("dnd5e-2014", "moduleArtConfiguration")?.[moduleId];
     settings ??= {portraits: true, tokens: true};
     for ( const [packName, actors] of Object.entries(mapping) ) {
       const pack = game.packs.get(packName);
@@ -118,7 +118,7 @@ export class ModuleArt {
    * @returns {ModuleArtDescriptor[]}
    */
   static getArtModules() {
-    const settings = game.settings.get("dnd5e", "moduleArtConfiguration");
+    const settings = game.settings.get("dnd5e-2014", "moduleArtConfiguration");
     const unsorted = [];
     const configs = [{
       id: game.system.id,
@@ -157,7 +157,7 @@ export class ModuleArt {
 export class ModuleArtConfig extends FormApplication {
   /** @inheritdoc */
   constructor(object={}, options={}) {
-    object = foundry.utils.mergeObject(game.settings.get("dnd5e", "moduleArtConfiguration"), object, {inplace: false});
+    object = foundry.utils.mergeObject(game.settings.get("dnd5e-2014", "moduleArtConfiguration"), object, {inplace: false});
     super(object, options);
   }
 
@@ -234,7 +234,7 @@ export class ModuleArtConfig extends FormApplication {
 
   /** @inheritdoc */
   async _updateObject(event, formData) {
-    await game.settings.set("dnd5e", "moduleArtConfiguration", foundry.utils.expandObject(formData));
+    await game.settings.set("dnd5e-2014", "moduleArtConfiguration", foundry.utils.expandObject(formData));
     return SettingsConfig.reloadConfirm({world: true});
   }
 }

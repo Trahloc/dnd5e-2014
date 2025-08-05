@@ -125,7 +125,7 @@ export class SummonsData extends foundry.abstract.DataModel {
    * @type {boolean}
    */
   static get canSummon() {
-    return game.user.can("TOKEN_CREATE") && (game.user.isGM || game.settings.get("dnd5e", "allowSummoning"));
+    return game.user.can("TOKEN_CREATE") && (game.user.isGM || game.settings.get("dnd5e-2014", "allowSummoning"));
   }
 
   get canSummon() {
@@ -167,7 +167,7 @@ export class SummonsData extends foundry.abstract.DataModel {
   get summonedCreatures() {
     if ( !this.item.actor ) return [];
     return SummonsData.summonedCreatures(this.item.actor)
-      .filter(i => i?.getFlag("dnd5e", "summon.origin") === this.item.uuid);
+      .filter(i => i?.getFlag("dnd5e-2014", "summon.origin") === this.item.uuid);
   }
 
   /* -------------------------------------------- */
@@ -291,17 +291,17 @@ export class SummonsData extends foundry.abstract.DataModel {
     if ( !actor ) throw new Error(game.i18n.format("DND5E.Summoning.Warning.NoActor", { uuid }));
 
     const actorLink = actor.prototypeToken.actorLink;
-    if ( !actor.pack && (!actorLink || actor.getFlag("dnd5e", "summon.origin") === this.item.uuid )) return actor;
+    if ( !actor.pack && (!actorLink || actor.getFlag("dnd5e-2014", "summon.origin") === this.item.uuid )) return actor;
 
     // Search world actors to see if any usable summoned actor instances are present from prior summonings.
     // Linked actors must match the summoning origin (item) to be considered.
     const localActor = game.actors.find(a =>
       // Has been cloned for summoning use
-      a.getFlag("dnd5e", "summonedCopy")
+      a.getFlag("dnd5e-2014", "summonedCopy")
       // Sourced from the desired actor UUID
       && (a.getFlag("core", "sourceId") === uuid)
       // Unlinked or created from this item specifically
-      && ((a.getFlag("dnd5e", "summon.origin") === this.item.uuid) || !a.prototypeToken.actorLink)
+      && ((a.getFlag("dnd5e-2014", "summon.origin") === this.item.uuid) || !a.prototypeToken.actorLink)
     );
     if ( localActor ) return localActor;
 

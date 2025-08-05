@@ -161,7 +161,7 @@ export default class AttributesFields {
     const encumbrance = this.attributes.encumbrance ??= {};
     const baseUnits = CONFIG.DND5E.encumbrance.baseUnits[this.parent.type]
       ?? CONFIG.DND5E.encumbrance.baseUnits.default;
-    const unitSystem = game.settings.get("dnd5e", "metricWeightUnits") ? "metric" : "imperial";
+    const unitSystem = game.settings.get("dnd5e-2014", "metricWeightUnits") ? "metric" : "imperial";
 
     // Get the total weight from items
     let weight = this.parent.items
@@ -170,7 +170,7 @@ export default class AttributesFields {
 
     // [Optional] add Currency Weight (for non-transformed actors)
     const currency = this.currency;
-    if ( game.settings.get("dnd5e", "currencyWeight") && currency ) {
+    if ( game.settings.get("dnd5e-2014", "currencyWeight") && currency ) {
       const numCoins = Object.values(currency).reduce((val, denom) => val + Math.max(denom, 0), 0);
       const currencyPerWeight = config.currencyPerWeight[unitSystem];
       weight += convertWeight(
@@ -226,7 +226,7 @@ export default class AttributesFields {
    */
   static prepareExhaustionLevel() {
     const exhaustion = this.parent.effects.get(ActiveEffect5e.ID.EXHAUSTION);
-    const level = exhaustion?.getFlag("dnd5e", "exhaustionLevel");
+    const level = exhaustion?.getFlag("dnd5e-2014", "exhaustionLevel");
     this.attributes.exhaustion = Number.isFinite(level) ? level : 0;
   }
 

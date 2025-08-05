@@ -62,7 +62,7 @@ export default class TokenConfig5e extends TokenConfig {
     tokenTab.replaceChildren(...tab.children);
 
     let ringTab = document.createElement("div");
-    const flags = this.document.getFlag("dnd5e", "tokenRing") ?? {};
+    const flags = this.document.getFlag("dnd5e-2014", "tokenRing") ?? {};
     ringTab.innerHTML = await renderTemplate(this.constructor.dynamicRingTemplate, {
       flags: foundry.utils.mergeObject({ scaleCorrection: 1 }, flags, { inplace: false }),
       effects: Object.entries(CONFIG.DND5E.tokenRings.effects).reduce((obj, [key, label]) => {

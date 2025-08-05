@@ -157,7 +157,7 @@ export default class ConsumableData extends ItemDataModel.mixin(
    * @returns {number}
    */
   get proficiencyMultiplier() {
-    const isProficient = this.parent?.actor?.getFlag("dnd5e", "tavernBrawlerFeat");
+    const isProficient = this.parent?.actor?.getFlag("dnd5e-2014", "tavernBrawlerFeat");
     return isProficient ? 1 : 0;
   }
 

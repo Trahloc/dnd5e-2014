@@ -1162,7 +1162,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
       config.createSummons = summons.prompt;
       config.summonsProfile = this.system.summons.profiles[0]._id;
     }
-    if ( this.requiresConcentration && !game.settings.get("dnd5e", "disableConcentration") ) {
+    if ( this.requiresConcentration && !game.settings.get("dnd5e-2014", "disableConcentration") ) {
       config.beginConcentrating = true;
       const { effects } = this.actor.concentration;
       const limit = this.actor.system.attributes?.concentration?.limit ?? 0;
@@ -1436,7 +1436,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
       config: CONFIG.DND5E,
       tokenId: token?.uuid || null,
       item: this,
-      effects: this.effects.filter(e => (e.getFlag("dnd5e", "type") !== "enchantment") && !e.getFlag("dnd5e", "rider")),
+      effects: this.effects.filter(e => (e.getFlag("dnd5e-2014", "type") !== "enchantment") && !e.getFlag("dnd5e-2014", "rider")),
       data: await this.system.getCardData(),
       labels: this.labels,
       hasAttack: this.hasAttack,
@@ -1673,7 +1673,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
     // Fetch level from tags if not specified
     let originalLevel = this.system.level;
     let scaling = this.system.scaling;
-    const levelingFlag = this.getFlag("dnd5e", "spellLevel");
+    const levelingFlag = this.getFlag("dnd5e-2014", "spellLevel");
     if ( !spellLevel && levelingFlag ) {
       spellLevel = levelingFlag.value;
       originalLevel = levelingFlag.base;
@@ -1762,7 +1762,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
 
     // Factor in extra critical damage dice from the Barbarian's "Brutal Critical"
     if ( this.system.actionType === "mwak" ) {
-      rollConfig.criticalBonusDice = this.actor.getFlag("dnd5e", "meleeCriticalDamageDice") ?? 0;
+      rollConfig.criticalBonusDice = this.actor.getFlag("dnd5e-2014", "meleeCriticalDamageDice") ?? 0;
     }
 
     // Factor in extra weapon-specific critical damage
@@ -2065,7 +2065,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
       if ( !( isTargetted || game.user.isGM || actor.isOwner ) ) return;
 
       // Get the Item from stored flag data or by the item ID on the Actor
-      const storedData = message.getFlag("dnd5e", "itemData");
+      const storedData = message.getFlag("dnd5e-2014", "itemData");
       let item = storedData ? new this(storedData, {parent: actor}) : actor.items.get(card.dataset.itemId);
       if ( !item ) {
         ui.notifications.error(game.i18n.format("DND5E.ActionWarningNoItem", {
@@ -2093,7 +2093,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
           const li = button.closest("li.effect");
           let effect = item.effects.get(li.dataset.effectId);
           if ( !effect ) effect = await fromUuid(li.dataset.uuid);
-          const concentration = actor.effects.get(message.getFlag("dnd5e", "use.concentrationId"));
+          const concentration = actor.effects.get(message.getFlag("dnd5e-2014", "use.concentrationId"));
           const effectData = { "flags.dnd5e-2014.spellLevel": spellLevel };
           for ( const token of canvas.tokens.controlled ) {
             try {
@@ -2623,7 +2623,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
   /** @inheritdoc */
   async deleteDialog(options={}) {
     // If item has advancement, handle it separately
-    if ( this.actor?.system.metadata?.supportsAdvancement && !game.settings.get("dnd5e", "disableAdvancements") ) {
+    if ( this.actor?.system.metadata?.supportsAdvancement && !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
       const manager = AdvancementManager.forDeletedItem(this.actor, this.id);
       if ( manager.steps.length ) {
         try {
@@ -2776,7 +2776,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
    */
   static async createScrollFromSpell(spell, options={}, config={}) {
     config = foundry.utils.mergeObject({
-      explanation: game.user.getFlag("dnd5e", "creation.scrollExplanation") ?? "reference",
+      explanation: game.user.getFlag("dnd5e-2014", "creation.scrollExplanation") ?? "reference",
       level: spell.system.level
     }, config);
 
@@ -2797,7 +2797,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
       });
       if ( result === null ) return;
       foundry.utils.mergeObject(config, result);
-      await game.user.setFlag("dnd5e", "creation.scrollExplanation", config.explanation);
+      await game.user.setFlag("dnd5e-2014", "creation.scrollExplanation", config.explanation);
     }
 
     // Get spell data

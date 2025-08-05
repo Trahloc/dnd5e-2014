@@ -134,7 +134,7 @@ export default class Tooltips5e {
       label = game.i18n.format("DND5E.SkillPassiveHint", { skill: abilityConfig.label });
     }
 
-    const party = game.settings.get("dnd5e", "primaryParty")?.actor;
+    const party = game.settings.get("dnd5e-2014", "primaryParty")?.actor;
     if ( !party ) {
       this.tooltip.innerHTML = label;
       return;

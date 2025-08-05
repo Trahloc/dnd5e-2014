@@ -11,7 +11,7 @@ export default function ActorSheetV2Mixin(Base) {
   return class ActorSheetV2 extends Base {
     constructor(object, options={}) {
       const key = `${object.type}${object.limited ? ":limited" : ""}`;
-      const { width, height } = game.user.getFlag("dnd5e", `sheetPrefs.${key}`) ?? {};
+      const { width, height } = game.user.getFlag("dnd5e-2014", `sheetPrefs.${key}`) ?? {};
       if ( width && !("width" in options) ) options.width = width;
       if ( height && !("height" in options) ) options.height = height;
       super(object, options);
@@ -153,12 +153,12 @@ export default function ActorSheetV2Mixin(Base) {
         : "biography";
       const sheetPrefs = `sheetPrefs.${this.actor.type}.tabs.${activeTab}`;
       context.cssClass += ` tab-${activeTab}`;
-      context.sidebarCollapsed = !!game.user.getFlag("dnd5e", `${sheetPrefs}.collapseSidebar`);
+      context.sidebarCollapsed = !!game.user.getFlag("dnd5e-2014", `${sheetPrefs}.collapseSidebar`);
       if ( context.sidebarCollapsed ) context.cssClass += " collapsed";
       const { attributes } = this.actor.system;
 
       // Portrait
-      const showTokenPortrait = this.actor.getFlag("dnd5e", "showTokenPortrait") === true;
+      const showTokenPortrait = this.actor.getFlag("dnd5e-2014", "showTokenPortrait") === true;
       const token = this.actor.isToken ? this.actor.token : this.actor.prototypeToken;
       const defaultArtwork = Actor.implementation.getDefaultArtwork(context.source)?.img;
       context.portrait = {
@@ -498,7 +498,7 @@ export default function ActorSheetV2Mixin(Base) {
       this.form.className = this.form.className.replace(/tab-\w+/g, "");
       this.form.classList.add(`tab-${active}`);
       const sheetPrefs = `sheetPrefs.${this.actor.type}.tabs.${active}`;
-      const sidebarCollapsed = game.user.getFlag("dnd5e", `${sheetPrefs}.collapseSidebar`);
+      const sidebarCollapsed = game.user.getFlag("dnd5e-2014", `${sheetPrefs}.collapseSidebar`);
       if ( sidebarCollapsed !== undefined ) this._toggleSidebar(sidebarCollapsed);
       const createChild = this.form.querySelector(".create-child");
       createChild.setAttribute("aria-label", game.i18n.format("SIDEBAR.Create", {
@@ -618,7 +618,7 @@ export default function ActorSheetV2Mixin(Base) {
       super._onResize(event);
       const { width, height } = this.position;
       const key = `${this.actor.type}${this.actor.limited ? ":limited": ""}`;
-      game.user.setFlag("dnd5e", `sheetPrefs.${key}`, { width, height });
+      game.user.setFlag("dnd5e-2014", `sheetPrefs.${key}`, { width, height });
     }
 
     /* -------------------------------------------- */
@@ -628,7 +628,7 @@ export default function ActorSheetV2Mixin(Base) {
      * @protected
      */
     _onShowPortrait() {
-      const showTokenPortrait = this.actor.getFlag("dnd5e", "showTokenPortrait") === true;
+      const showTokenPortrait = this.actor.getFlag("dnd5e-2014", "showTokenPortrait") === true;
       const token = this.actor.isToken ? this.actor.token : this.actor.prototypeToken;
       const img = showTokenPortrait ? token.texture.src : this.actor.img;
       new ImagePopout(img, { title: this.actor.name, uuid: this.actor.uuid }).render(true);
@@ -695,7 +695,7 @@ export default function ActorSheetV2Mixin(Base) {
     _onToggleSidebar() {
       const collapsed = this._toggleSidebar();
       const activeTab = this._tabs?.[0]?.active ?? "details";
-      game.user.setFlag("dnd5e", `sheetPrefs.${this.actor.type}.tabs.${activeTab}.collapseSidebar`, collapsed);
+      game.user.setFlag("dnd5e-2014", `sheetPrefs.${this.actor.type}.tabs.${activeTab}.collapseSidebar`, collapsed);
     }
 
     /* -------------------------------------------- */

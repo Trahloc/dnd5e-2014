@@ -35,14 +35,14 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
 
     const classes = this.actor.itemTypes.class;
     return foundry.utils.mergeObject(context, {
-      disableExperience: game.settings.get("dnd5e", "disableExperienceTracking"),
+      disableExperience: game.settings.get("dnd5e-2014", "disableExperienceTracking"),
       classLabels: classes.map(c => c.name).join(", "),
       labels: {
         type: context.system.details.type.label
       },
       multiclassLabels: classes.map(c => [c.subclass?.name ?? "", c.name, c.system.levels].filterJoin(" ")).join(", "),
       weightUnit: game.i18n.localize(`DND5E.Abbreviation${
-        game.settings.get("dnd5e", "metricWeightUnits") ? "Kg" : "Lbs"}`),
+        game.settings.get("dnd5e-2014", "metricWeightUnits") ? "Kg" : "Lbs"}`),
       encumbrance: context.system.attributes.encumbrance
     });
   }
@@ -90,7 +90,7 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
 
       // Item grouping
       ctx.ungroup = "passive";
-      const [originId] = item.getFlag("dnd5e", "advancementOrigin")?.split(".") ?? [];
+      const [originId] = item.getFlag("dnd5e-2014", "advancementOrigin")?.split(".") ?? [];
       const group = this.actor.items.get(originId);
       switch ( group?.type ) {
         case "race": ctx.group = "race"; break;
@@ -310,7 +310,7 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
       const cls = this.actor.itemTypes.class.find(c => c.identifier === itemData.system.identifier);
       if ( cls ) {
         const priorLevel = cls.system.levels;
-        if ( !game.settings.get("dnd5e", "disableAdvancements") ) {
+        if ( !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
           const manager = AdvancementManager.forLevelChange(this.actor, cls.id, itemData.system.levels);
           if ( manager.steps.length ) {
             manager.render(true);

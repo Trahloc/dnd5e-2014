@@ -228,7 +228,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
     }, {});
 
     // Proficiency
-    labels.proficiency = game.settings.get("dnd5e", "proficiencyModifier") === "dice"
+    labels.proficiency = game.settings.get("dnd5e-2014", "proficiencyModifier") === "dice"
       ? `d${this.actor.system.attributes.prof * 2}`
       : `+${this.actor.system.attributes.prof}`;
 
@@ -701,7 +701,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
     const classId = event.target.closest("[data-item-id]")?.dataset.itemId;
     if ( !delta || !classId ) return;
     const classItem = this.actor.items.get(classId);
-    if ( !game.settings.get("dnd5e", "disableAdvancements") ) {
+    if ( !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
       const manager = AdvancementManager.forLevelChange(this.actor, classId, delta);
       if ( manager.steps.length ) {
         if ( delta > 0 ) return manager.render(true);
@@ -826,7 +826,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
 
   /** @override */
   async _onDropActor(event, data) {
-    const canPolymorph = game.user.isGM || (this.actor.isOwner && game.settings.get("dnd5e", "allowPolymorphing"));
+    const canPolymorph = game.user.isGM || (this.actor.isOwner && game.settings.get("dnd5e-2014", "allowPolymorphing"));
     if ( !canPolymorph ) return false;
 
     // Get the target actor
@@ -840,8 +840,8 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
       html.find("input").each((i, el) => {
         options[el.name] = el.checked;
       });
-      const settings = foundry.utils.mergeObject(game.settings.get("dnd5e", "polymorphSettings") ?? {}, options);
-      game.settings.set("dnd5e", "polymorphSettings", settings);
+      const settings = foundry.utils.mergeObject(game.settings.get("dnd5e-2014", "polymorphSettings") ?? {}, options);
+      game.settings.set("dnd5e-2014", "polymorphSettings", settings);
       return settings;
     };
 
@@ -849,7 +849,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
     return new Dialog({
       title: game.i18n.localize("DND5E.PolymorphPromptTitle"),
       content: {
-        options: game.settings.get("dnd5e", "polymorphSettings"),
+        options: game.settings.get("dnd5e-2014", "polymorphSettings"),
         settings: CONFIG.DND5E.polymorphSettings,
         effectSettings: CONFIG.DND5E.polymorphEffectSettings,
         isToken: this.actor.isToken
@@ -956,7 +956,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
     let items = itemData instanceof Array ? itemData : [itemData];
     const itemsWithoutAdvancement = items.filter(i => !i.system.advancement?.length);
     const multipleAdvancements = (items.length - itemsWithoutAdvancement.length) > 1;
-    if ( multipleAdvancements && !game.settings.get("dnd5e", "disableAdvancements") ) {
+    if ( multipleAdvancements && !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
       ui.notifications.warn(game.i18n.format("DND5E.WarnCantAddMultipleAdvancements"));
       items = itemsWithoutAdvancement;
     }
@@ -1007,7 +1007,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
 
     // Bypass normal creation flow for any items with advancement
     if ( this.actor.system.metadata?.supportsAdvancement && itemData.system.advancement?.length
-        && !game.settings.get("dnd5e", "disableAdvancements") ) {
+        && !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
       // Ensure that this item isn't violating the singleton rule
       const dataModel = CONFIG.Item.dataModels[itemData.type];
       const singleton = dataModel?.metadata.singleton ?? false;

@@ -31,7 +31,7 @@ export default class PhysicalItemTemplate extends SystemDataModel {
         }),
         units: new foundry.data.fields.StringField({
           required: true, label: "DND5E.WeightUnit.Label",
-          initial: () => game.settings.get("dnd5e", "metricWeightUnits") ? "kg" : "lb"
+          initial: () => game.settings.get("dnd5e-2014", "metricWeightUnits") ? "kg" : "lb"
         })
       }, {label: "DND5E.Weight"}),
       price: new foundry.data.fields.SchemaField({
@@ -157,7 +157,7 @@ export default class PhysicalItemTemplate extends SystemDataModel {
     if ( !("weight" in source) || (foundry.utils.getType(source.weight) === "Object") ) return;
     source.weight = {
       value: Number.isNumeric(source.weight) ? Number(source.weight) : 0,
-      units: game.settings.get("dnd5e", "metricWeightUnits") ? "kg" : "lb"
+      units: game.settings.get("dnd5e-2014", "metricWeightUnits") ? "kg" : "lb"
     };
   }
 

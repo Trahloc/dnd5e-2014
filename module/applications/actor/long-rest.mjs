@@ -26,7 +26,7 @@ export default class LongRestDialog extends Dialog {
   /** @inheritDoc */
   getData() {
     const context = super.getData();
-    const variant = game.settings.get("dnd5e", "restVariant");
+    const variant = game.settings.get("dnd5e-2014", "restVariant");
     context.isGroup = this.actor.type === "group";
     context.promptNewDay = variant !== "gritty";     // It's always a new day when resting 1 week
     context.newDay = variant === "normal";           // It's probably a new day when resting normally (8 hours)

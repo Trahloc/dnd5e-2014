@@ -73,7 +73,7 @@ export default class Proficiency {
    * @type {string}
    */
   get term() {
-    return (game.settings.get("dnd5e", "proficiencyModifier") === "dice") ? this.dice : String(this.flat);
+    return (game.settings.get("dnd5e-2014", "proficiencyModifier") === "dice") ? this.dice : String(this.flat);
   }
 
   /* -------------------------------------------- */

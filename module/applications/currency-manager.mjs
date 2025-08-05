@@ -34,7 +34,7 @@ export default class CurrencyManager extends DialogMixin(FormApplication) {
     destinations.push(...(actor?.system.transferDestinations ?? []));
     destinations.push(...(actor?.itemTypes.container.filter(b => b !== this.object) ?? []));
     if ( game.user.isGM ) {
-      const primaryParty = game.settings.get("dnd5e", "primaryParty")?.actor;
+      const primaryParty = game.settings.get("dnd5e-2014", "primaryParty")?.actor;
       if ( primaryParty && (this.object !== primaryParty) && !destinations.includes(primaryParty) ) {
         destinations.push(primaryParty);
       }

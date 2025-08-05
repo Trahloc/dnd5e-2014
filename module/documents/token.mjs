@@ -16,7 +16,7 @@ export default class TokenDocument5e extends SystemFlagsMixin(TokenDocument) {
    * @type {boolean}
    */
   get hasDynamicRing() {
-    if ( game.release.generation < 12 ) return !!this.getFlag("dnd5e", "tokenRing.enabled");
+    if ( game.release.generation < 12 ) return !!this.getFlag("dnd5e-2014", "tokenRing.enabled");
     return this.ring.enabled;
   }
 
@@ -30,7 +30,7 @@ export default class TokenDocument5e extends SystemFlagsMixin(TokenDocument) {
    */
   get subjectPath() {
     if ( game.release.generation >= 12 ) return this.ring.subject.texture;
-    const subject = this.getFlag("dnd5e", "tokenRing")?.textures?.subject;
+    const subject = this.getFlag("dnd5e-2014", "tokenRing")?.textures?.subject;
     if ( subject ) return subject;
     this.#subjectPath ??= this.constructor.inferSubjectPath(this.texture.src);
     return this.#subjectPath;
@@ -267,7 +267,7 @@ export default class TokenDocument5e extends SystemFlagsMixin(TokenDocument) {
   _onDelete(options, userId) {
     super._onDelete(options, userId);
 
-    const origin = this.actor?.getFlag("dnd5e", "summon.origin");
+    const origin = this.actor?.getFlag("dnd5e-2014", "summon.origin");
     // TODO: Replace with parseUuid once V11 support is dropped
     if ( origin ) SummonsData.untrackSummon(origin.split(".Item.")[0], this.actor.uuid);
   }

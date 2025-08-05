@@ -96,8 +96,8 @@ Hooks.once("init", function() {
   _configureStatusEffects();
 
   // Remove honor & sanity from configuration if they aren't enabled
-  if ( !game.settings.get("dnd5e", "honorScore") ) delete DND5E.abilities.hon;
-  if ( !game.settings.get("dnd5e", "sanityScore") ) delete DND5E.abilities.san;
+  if ( !game.settings.get("dnd5e-2014", "honorScore") ) delete DND5E.abilities.hon;
+  if ( !game.settings.get("dnd5e-2014", "sanityScore") ) delete DND5E.abilities.san;
 
   // Register Roll Extensions
   CONFIG.Dice.rolls.push(dice.D20Roll);
@@ -113,7 +113,7 @@ Hooks.once("init", function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("dnd5e", applications.actor.ActorSheet5eCharacter, {
+  Actors.registerSheet("dnd5e-2014", applications.actor.ActorSheet5eCharacter, {
     types: ["character"],
     label: "DND5E.SheetClassCharacterLegacy"
   });
@@ -122,7 +122,7 @@ Hooks.once("init", function() {
     makeDefault: true,
     label: "DND5E.SheetClassCharacter"
   });
-  Actors.registerSheet("dnd5e", applications.actor.ActorSheet5eNPC, {
+  Actors.registerSheet("dnd5e-2014", applications.actor.ActorSheet5eNPC, {
     types: ["npc"],
     makeDefault: true,
     label: "DND5E.SheetClassNPCLegacy"
@@ -132,12 +132,12 @@ Hooks.once("init", function() {
     makeDefault: true,
     label: "DND5E.SheetClassNPC"
   });
-  Actors.registerSheet("dnd5e", applications.actor.ActorSheet5eVehicle, {
+  Actors.registerSheet("dnd5e-2014", applications.actor.ActorSheet5eVehicle, {
     types: ["vehicle"],
     makeDefault: true,
     label: "DND5E.SheetClassVehicle"
   });
-  Actors.registerSheet("dnd5e", applications.actor.GroupActorSheet, {
+  Actors.registerSheet("dnd5e-2014", applications.actor.GroupActorSheet, {
     types: ["group"],
     makeDefault: true,
     label: "DND5E.SheetClassGroup"
@@ -148,7 +148,7 @@ Hooks.once("init", function() {
     makeDefault: true,
     label: "DND5E.SheetClassItem"
   });
-  DocumentSheetConfig.unregisterSheet(Item, "dnd5e", applications.item.ItemSheet5e, { types: ["container"] });
+  DocumentSheetConfig.unregisterSheet(Item, "dnd5e-2014", applications.item.ItemSheet5e, { types: ["container"] });
   DocumentSheetConfig.registerSheet(Item, "dnd5e", applications.item.ContainerSheet, {
     makeDefault: true,
     types: ["container"],
@@ -416,9 +416,9 @@ Hooks.once("ready", function() {
 
   // Determine whether a system migration is required and feasible
   if ( !game.user.isGM ) return;
-  const cv = game.settings.get("dnd5e", "systemMigrationVersion") || game.world.flags.dnd5e-2014?.version;
+  const cv = game.settings.get("dnd5e-2014", "systemMigrationVersion") || game.world.flags.dnd5e-2014?.version;
   const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
-  if ( !cv && totalDocuments === 0 ) return game.settings.set("dnd5e", "systemMigrationVersion", game.system.version);
+  if ( !cv && totalDocuments === 0 ) return game.settings.set("dnd5e-2014", "systemMigrationVersion", game.system.version);
   if ( cv && !foundry.utils.isNewerVersion(game.system.flags.needsMigrationVersion, cv) ) return;
 
   // Compendium pack folder migration.
@@ -439,7 +439,7 @@ Hooks.once("ready", function() {
 
 Hooks.on("canvasInit", gameCanvas => {
   if ( game.release.generation < 12 ) {
-    gameCanvas.grid.diagonalRule = game.settings.get("dnd5e", "diagonalMovement");
+    gameCanvas.grid.diagonalRule = game.settings.get("dnd5e-2014", "diagonalMovement");
     SquareGrid.prototype.measureDistances = canvas.measureDistances;
   }
   CONFIG.Token.ringClass.pushToLoad(gameCanvas.loadTexturesOptions.additionalSources);

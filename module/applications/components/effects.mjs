@@ -129,7 +129,7 @@ export default class EffectsElement extends HTMLElement {
         if ( e.disabled ) categories.enchantmentInactive.effects.push(e);
         else categories.enchantmentActive.effects.push(e);
       }
-      else if ( e.getFlag("dnd5e", "type") === "enchantment" ) categories.enchantment.effects.push(e);
+      else if ( e.getFlag("dnd5e-2014", "type") === "enchantment" ) categories.enchantment.effects.push(e);
       else if ( e.isSuppressed ) categories.suppressed.effects.push(e);
       else if ( e.disabled ) categories.inactive.effects.push(e);
       else if ( e.isTemporary ) categories.temporary.effects.push(e);

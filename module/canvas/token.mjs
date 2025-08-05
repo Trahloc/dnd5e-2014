@@ -133,7 +133,7 @@ export default class Token5e extends Token {
     if ( ("scaleCorrection" in dataFlag) && !shapeChange ) this.ring.configureUVs(dataFlag.scaleCorrection);
 
     // If we don't need a full redraw, we're just updating the visuals properties
-    const tokenRingFlag = this.document.getFlag("dnd5e", "tokenRing") || {};
+    const tokenRingFlag = this.document.getFlag("dnd5e-2014", "tokenRing") || {};
     this.ring.configureVisuals({...tokenRingFlag});
   }
 
@@ -154,7 +154,7 @@ export default class Token5e extends Token {
     if ( applicableEffects.includes(statusId) ) {
       if ( game.release.generation < 12 ) {
         if ( this.ring.enabled ) {
-          const tokenRingFlag = this.document.getFlag("dnd5e", "tokenRing") || {};
+          const tokenRingFlag = this.document.getFlag("dnd5e-2014", "tokenRing") || {};
           this.ring.configureVisuals(foundry.utils.deepClone(tokenRingFlag));
         }
       } else if ( this.hasDynamicRing ) this.renderFlags.set({refreshRingVisuals: true});

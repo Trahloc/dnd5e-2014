@@ -137,7 +137,7 @@ export default class ItemListControlsElement extends HTMLElement {
    * @type {TabPreferences5e}
    */
   get prefs() {
-    return game.user.getFlag("dnd5e", `sheetPrefs.${this.app.object.type}.tabs.${this.tab}`);
+    return game.user.getFlag("dnd5e-2014", `sheetPrefs.${this.app.object.type}.tabs.${this.tab}`);
   }
 
   /**
@@ -383,7 +383,7 @@ export default class ItemListControlsElement extends HTMLElement {
   async _onToggleMode(event) {
     const { action } = event.currentTarget.dataset;
     const flag = `sheetPrefs.${this.app.object.type}.tabs.${this.tab}.${action}`;
-    const current = game.user.getFlag("dnd5e", flag);
+    const current = game.user.getFlag("dnd5e-2014", flag);
     let value;
     if ( action === "group" ) value = current === false;
     else if ( action === "sort" ) {
@@ -391,7 +391,7 @@ export default class ItemListControlsElement extends HTMLElement {
       const index = values.indexOf(current);
       value = values[index + 1] ?? values[0];
     }
-    await game.user.setFlag("dnd5e", flag, value);
+    await game.user.setFlag("dnd5e-2014", flag, value);
     if ( action === "group" ) {
       this._initGrouping();
       this._applyGrouping();

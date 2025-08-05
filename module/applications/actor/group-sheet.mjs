@@ -64,7 +64,7 @@ export default class GroupActorSheet extends ActorSheetMixin(ActorSheet) {
     context.movement = this.#prepareMovementSpeed();
 
     // XP
-    if ( !game.settings.get("dnd5e", "disableExperienceTracking") ) context.xp = context.system.details.xp;
+    if ( !game.settings.get("dnd5e-2014", "disableExperienceTracking") ) context.xp = context.system.details.xp;
 
     // Inventory
     context.itemContext = {};
@@ -139,7 +139,7 @@ export default class GroupActorSheet extends ActorSheetMixin(ActorSheet) {
       vehicle: {label: `${CONFIG.Actor.typeLabels.vehicle}Pl`, members: []}
     };
     const type = this.actor.system.type.value;
-    const displayXP = !game.settings.get("dnd5e", "disableExperienceTracking");
+    const displayXP = !game.settings.get("dnd5e-2014", "disableExperienceTracking");
     for ( const [index, memberData] of this.object.system.members.entries() ) {
       const member = memberData.actor;
       const multiplier = type === "encounter" ? (memberData.quantity.value ?? 1) : 1;
@@ -292,7 +292,7 @@ export default class GroupActorSheet extends ActorSheetMixin(ActorSheet) {
     const button = event.currentTarget;
     switch ( button.dataset.action ) {
       case "award":
-        const award = new Award(this.object, { savedDestinations: this.actor.getFlag("dnd5e", "awardDestinations") });
+        const award = new Award(this.object, { savedDestinations: this.actor.getFlag("dnd5e-2014", "awardDestinations") });
         award.render(true);
         break;
       case "longRest":

@@ -780,7 +780,7 @@ export default class ItemSheet5e extends ItemSheet {
     let keepOrigin = false;
 
     // Validate against the enchantment's restraints on the origin item
-    if ( effect.getFlag("dnd5e", "type") === "enchantment" ) {
+    if ( effect.getFlag("dnd5e-2014", "type") === "enchantment" ) {
       const errors = effect.parent.system.enchantment?.canEnchant(this.item);
       if ( errors?.length ) {
         errors.forEach(err => ui.notifications.error(err.message));
@@ -834,7 +834,7 @@ export default class ItemSheet5e extends ItemSheet {
     }
 
     if ( !advancements.length ) return false;
-    if ( this.item.actor?.system.metadata?.supportsAdvancement && !game.settings.get("dnd5e", "disableAdvancements") ) {
+    if ( this.item.actor?.system.metadata?.supportsAdvancement && !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
       const manager = AdvancementManager.forNewAdvancement(this.item.actor, this.item.id, advancements);
       if ( manager.steps.length ) return manager.render(true);
     }
@@ -863,7 +863,7 @@ export default class ItemSheet5e extends ItemSheet {
       case "edit": return new advancement.constructor.metadata.apps.config(advancement).render(true);
       case "delete":
         if ( this.item.actor?.system.metadata?.supportsAdvancement
-            && !game.settings.get("dnd5e", "disableAdvancements") ) {
+            && !game.settings.get("dnd5e-2014", "disableAdvancements") ) {
           manager = AdvancementManager.forDeletedAdvancement(this.item.actor, this.item.id, id);
           if ( manager.steps.length ) return manager.render(true);
         }

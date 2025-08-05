@@ -56,7 +56,7 @@ export default class EnchantmentConfig extends DocumentSheet {
     const effects = [];
     context.enchantments = [];
     for ( const effect of this.document.effects ) {
-      if ( effect.getFlag("dnd5e", "type") !== "enchantment" ) effects.push(effect);
+      if ( effect.getFlag("dnd5e-2014", "type") !== "enchantment" ) effects.push(effect);
       else if ( !effect.isAppliedEnchantment ) context.enchantments.push(effect);
     }
     context.enchantments = context.enchantments.map(effect => ({
@@ -124,7 +124,7 @@ export default class EnchantmentConfig extends DocumentSheet {
       return updates;
     });
     for ( const effect of this.document.effects ) {
-      if ( effect.getFlag("dnd5e", "type") === "enchantment" ) continue;
+      if ( effect.getFlag("dnd5e-2014", "type") === "enchantment" ) continue;
       if ( riderIds.has(effect.id) ) effectsChanges.push({ _id: effect.id, "flags.dnd5e-2014.rider": true });
       else effectsChanges.push({ _id: effect.id, "flags.dnd5e-2014.-=rider": null });
     }

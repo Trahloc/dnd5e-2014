@@ -57,7 +57,7 @@ export default class ShortRestDialog extends Dialog {
     }
 
     // Determine rest type
-    const variant = game.settings.get("dnd5e", "restVariant");
+    const variant = game.settings.get("dnd5e-2014", "restVariant");
     context.promptNewDay = variant !== "epic";     // It's never a new day when only resting 1 minute
     context.newDay = false;                        // It may be a new day, but not by default
     return context;

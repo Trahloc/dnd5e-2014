@@ -63,7 +63,7 @@ export default class EnchantmentApplicationElement extends HTMLElement {
 
     // Calculate the maximum targets
     let item = this.enchantmentItem;
-    const spellLevel = this.chatMessage.getFlag("dnd5e", "use.spellLevel");
+    const spellLevel = this.chatMessage.getFlag("dnd5e-2014", "use.spellLevel");
     if ( spellLevel ) {
       item = item.clone({ "system.level": spellLevel });
       item.prepareData();
@@ -135,7 +135,7 @@ export default class EnchantmentApplicationElement extends HTMLElement {
   async _onDrop(event) {
     event.preventDefault();
     const data = TextEditor.getDragEventData(event);
-    const effect = this.enchantmentItem.effects.get(this.chatMessage.getFlag("dnd5e", "use.enchantmentProfile"));
+    const effect = this.enchantmentItem.effects.get(this.chatMessage.getFlag("dnd5e-2014", "use.enchantmentProfile"));
     if ( (data.type !== "Item") || !effect ) return;
     const droppedItem = await Item.implementation.fromDropData(data);
 
@@ -147,7 +147,7 @@ export default class EnchantmentApplicationElement extends HTMLElement {
     }
 
     // If concentration is required, ensure it is still being maintained & GM is present
-    const concentrationId = this.chatMessage.getFlag("dnd5e", "use.concentrationId");
+    const concentrationId = this.chatMessage.getFlag("dnd5e-2014", "use.concentrationId");
     const concentration = effect.parent.actor.effects.get(concentrationId);
     if ( concentrationId && !concentration ) {
       ui.notifications.error("DND5E.Enchantment.Warning.ConcentrationEnded", { localize: true });

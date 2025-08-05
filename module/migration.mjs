@@ -141,7 +141,7 @@ export const migrateWorld = async function() {
   }
 
   // Set the migration as complete
-  game.settings.set("dnd5e", "systemMigrationVersion", game.system.version);
+  game.settings.set("dnd5e-2014", "systemMigrationVersion", game.system.version);
   ui.notifications.info(game.i18n.format("MIGRATION.5eComplete", {version}), {permanent: true});
 };
 

@@ -333,7 +333,7 @@ export class ActorDataModel extends SystemDataModel {
    * @type {Actor5e[]}
    */
   get transferDestinations() {
-    const primaryParty = game.settings.get("dnd5e", "primaryParty")?.actor;
+    const primaryParty = game.settings.get("dnd5e-2014", "primaryParty")?.actor;
     if ( !primaryParty?.system.members.ids.has(this.parent.id) ) return [];
     const destinations = primaryParty.system.members.map(m => m.actor).filter(a => a.isOwner && a !== this.parent);
     if ( primaryParty.isOwner ) destinations.unshift(primaryParty);
@@ -442,7 +442,7 @@ export class ItemDataModel extends SystemDataModel {
     const context = {
       name, type, img, price, weight, uses, school, materials, activation,
       config: CONFIG.DND5E,
-      controlHints: game.settings.get("dnd5e", "controlHints"),
+      controlHints: game.settings.get("dnd5e-2014", "controlHints"),
       labels: foundry.utils.deepClone(this.parent.labels),
       tags: this.parent.labels?.components?.tags,
       subtitle: subtitle.filterJoin(" &bull; "),

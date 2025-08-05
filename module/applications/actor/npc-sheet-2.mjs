@@ -101,7 +101,7 @@ export default class ActorSheet5eNPC2 extends ActorSheetV2Mixin(ActorSheet5eNPC)
 
     // Show Death Saves
     context.showDeathSaves = !foundry.utils.isEmpty(this.actor.classes)
-      || this.actor.getFlag("dnd5e", "showDeathSaves");
+      || this.actor.getFlag("dnd5e-2014", "showDeathSaves");
 
     // Speed
     context.speed = Object.entries(CONFIG.DND5E.movementTypes).reduce((obj, [k, label]) => {

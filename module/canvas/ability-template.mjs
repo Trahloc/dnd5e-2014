@@ -57,7 +57,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
         break;
       case "rect": // 5e rectangular AoEs are always cubes
         templateData.width = target.value;
-        if ( game.settings.get("dnd5e", "gridAlignedSquareTemplates") ) {
+        if ( game.settings.get("dnd5e-2014", "gridAlignedSquareTemplates") ) {
           templateData.distance = Math.hypot(target.value, target.value);
           templateData.direction = 45;
         } else {

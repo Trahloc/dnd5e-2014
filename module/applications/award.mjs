@@ -32,7 +32,7 @@ export default class Award extends DialogMixin(FormApplication) {
   get transferDestinations() {
     if ( this.isPartyAward ) return this.object.system.transferDestinations ?? [];
     if ( !game.user.isGM ) return [];
-    const primaryParty = game.settings.get("dnd5e", "primaryParty")?.actor;
+    const primaryParty = game.settings.get("dnd5e-2014", "primaryParty")?.actor;
     return primaryParty
       ? [primaryParty, ...primaryParty.system.transferDestinations]
       : game.users.map(u => u.character).filter(c => c);
@@ -63,8 +63,8 @@ export default class Award extends DialogMixin(FormApplication) {
     }, {});
     context.destinations = Award.prepareDestinations(this.transferDestinations, this.options.savedDestinations);
     context.each = this.options.each ?? false;
-    context.hideXP = game.settings.get("dnd5e", "disableExperienceTracking");
-    context.noPrimaryParty = !game.settings.get("dnd5e", "primaryParty")?.actor && !this.isPartyAward;
+    context.hideXP = game.settings.get("dnd5e-2014", "disableExperienceTracking");
+    context.noPrimaryParty = !game.settings.get("dnd5e-2014", "primaryParty")?.actor && !this.isPartyAward;
     context.xp = this.options.xp ?? this.object?.system.details.xp.value ?? this.object?.system.details.xp.derived;
 
     return context;
@@ -145,7 +145,7 @@ export default class Award extends DialogMixin(FormApplication) {
    */
   _saveDestinations(destinations) {
     const target = this.isPartyAward ? this.object : game.user;
-    target.setFlag("dnd5e", "awardDestinations", destinations);
+    target.setFlag("dnd5e-2014", "awardDestinations", destinations);
   }
 
   /* -------------------------------------------- */
@@ -324,7 +324,7 @@ export default class Award extends DialogMixin(FormApplication) {
       }
 
       // If the party command is set, a primary party is set, and the award isn't empty, skip the UI
-      const primaryParty = game.settings.get("dnd5e", "primaryParty")?.actor;
+      const primaryParty = game.settings.get("dnd5e-2014", "primaryParty")?.actor;
       if ( party && primaryParty && (xp || filteredKeys(currency).length) ) {
         const destinations = each ? primaryParty.system.playerCharacters : [primaryParty];
         const results = new Map();
@@ -335,7 +335,7 @@ export default class Award extends DialogMixin(FormApplication) {
 
       // Otherwise show the UI with defaults
       else {
-        const savedDestinations = game.user.getFlag("dnd5e", "awardDestinations");
+        const savedDestinations = game.user.getFlag("dnd5e-2014", "awardDestinations");
         const app = new Award(null, { currency, xp, each, savedDestinations });
         app.render(true);
       }

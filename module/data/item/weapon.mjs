@@ -201,7 +201,7 @@ export default class WeaponData extends ItemDataModel.mixin(
     const itemProf = config[this.type.value];
     const actorProfs = actor.system.traits?.weaponProf?.value ?? new Set();
     const natural = this.type.value === "natural";
-    const improvised = (this.type.value === "improv") && !!actor.getFlag("dnd5e", "tavernBrawlerFeat");
+    const improvised = (this.type.value === "improv") && !!actor.getFlag("dnd5e-2014", "tavernBrawlerFeat");
     const isProficient = natural || improvised || actorProfs.has(itemProf) || actorProfs.has(this.type.baseItem);
     return Number(isProficient);
   }
