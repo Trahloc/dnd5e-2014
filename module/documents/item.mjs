@@ -76,7 +76,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
     // Migrate backpack -> container.
     if ( data.type === "backpack" ) {
       data.type = "container";
-      foundry.utils.setProperty(data, "flags.dnd5e.persistSourceMigration", true);
+      foundry.utils.setProperty(data, "flags.dnd5e-2014.persistSourceMigration", true);
     }
 
     /**
@@ -936,7 +936,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
     options = foundry.utils.mergeObject({
       configureDialog: true,
       createMessage: true,
-      "flags.dnd5e.use": {type: this.type, itemId: this.id, itemUuid: this.uuid}
+      "flags.dnd5e-2014.use": {type: this.type, itemId: this.id, itemUuid: this.uuid}
     }, options);
 
     // Define follow-up actions resulting from the item usage
@@ -1168,7 +1168,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
       const limit = this.actor.system.attributes?.concentration?.limit ?? 0;
       if ( limit && (limit <= effects.size) ) {
         const id = effects.find(e => {
-          const data = e.flags.dnd5e?.itemData ?? {};
+          const data = e.flags.dnd5e-2014?.itemData ?? {};
           return (data === this.id) || (data._id === this.id);
         })?.id ?? effects.first()?.id ?? null;
         config.endConcentration = id;
@@ -1542,7 +1542,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
    * @returns {Promise<D20Roll|null>}       A Promise which resolves to the created Roll instance
    */
   async rollAttack(options={}) {
-    const flags = this.actor.flags.dnd5e ?? {};
+    const flags = this.actor.flags.dnd5e-2014 ?? {};
     if ( !this.hasAttack ) throw new Error("You may not place an Attack Roll with this Item.");
     let title = `${this.name} - ${game.i18n.localize("DND5E.AttackRoll")}`;
 
@@ -1590,7 +1590,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
         left: window.innerWidth - 710
       },
       messageData: {
-        "flags.dnd5e": {
+        "flags.dnd5e-2014": {
           targets,
           roll: { type: "attack", itemId: this.id, itemUuid: this.uuid }
         },
@@ -1703,7 +1703,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
         left: window.innerWidth - 710
       },
       messageData: {
-        "flags.dnd5e": {
+        "flags.dnd5e-2014": {
           targets: this.constructor._formatAttackTargets(),
           roll: {type: "damage", itemId: this.id, itemUuid: this.uuid}
         },
@@ -1714,7 +1714,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
     // Adjust damage from versatile usage
     if ( versatile && dmg.versatile ) {
       rollConfigs[0].parts[0] = dmg.versatile;
-      rollConfig.messageData["flags.dnd5e"].roll.versatile = true;
+      rollConfig.messageData["flags.dnd5e-2014"].roll.versatile = true;
     }
 
     // Add magical damage if available
@@ -1903,7 +1903,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
         speaker: ChatMessage.getSpeaker({actor: this.actor}),
         flavor: `${this.name} - ${game.i18n.localize("DND5E.OtherFormula")}`,
         rollMode: game.settings.get("core", "rollMode"),
-        messageData: {"flags.dnd5e.roll": {type: "other", itemId: this.id, itemUuid: this.uuid}}
+        messageData: {"flags.dnd5e-2014.roll": {type: "other", itemId: this.id, itemUuid: this.uuid}}
       });
     }
 
@@ -2094,7 +2094,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
           let effect = item.effects.get(li.dataset.effectId);
           if ( !effect ) effect = await fromUuid(li.dataset.uuid);
           const concentration = actor.effects.get(message.getFlag("dnd5e", "use.concentrationId"));
-          const effectData = { "flags.dnd5e.spellLevel": spellLevel };
+          const effectData = { "flags.dnd5e-2014.spellLevel": spellLevel };
           for ( const token of canvas.tokens.controlled ) {
             try {
               await this._applyEffectToToken(effect, token, { concentration, effectData });
@@ -2128,7 +2128,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
           break;
         case "placeTemplate":
           try {
-            await dnd5e.canvas.AbilityTemplate.fromItem(item, {"flags.dnd5e.spellLevel": spellLevel})?.drawPreview();
+            await dnd5e.canvas.AbilityTemplate.fromItem(item, {"flags.dnd5e-2014.spellLevel": spellLevel})?.drawPreview();
           } catch(err) {
             Hooks.onError("Item5e#_onChatCardAction", err, {
               msg: game.i18n.localize("DND5E.PlaceTemplateError"),
@@ -2804,7 +2804,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
     const flags = {};
     const itemData = (spell instanceof Item5e) ? spell.toObject() : spell;
     if ( Number.isNumeric(config.level) ) {
-      flags.dnd5e = { spellLevel: {
+      flags.dnd5e-2014 = { spellLevel: {
         value: config.level,
         base: spell.system.level,
         scaling: spell.system.scaling

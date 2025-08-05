@@ -100,7 +100,7 @@ export async function d20Roll({
   // Attach original message ID to the message
   messageData = foundry.utils.expandObject(messageData);
   const messageId = event?.target.closest("[data-message-id]")?.dataset.messageId;
-  if ( messageId ) foundry.utils.setProperty(messageData, "flags.dnd5e.originatingMessage", messageId);
+  if ( messageId ) foundry.utils.setProperty(messageData, "flags.dnd5e-2014.originatingMessage", messageId);
 
   // Create a Chat Message
   if ( roll && chatMessage ) await roll.toMessage(messageData);
@@ -214,7 +214,7 @@ export async function damageRoll({
   // Attach original message ID to the message
   messageData = foundry.utils.expandObject(messageData);
   const messageId = event?.target.closest("[data-message-id]")?.dataset.messageId;
-  if ( messageId ) foundry.utils.setProperty(messageData, "flags.dnd5e.originatingMessage", messageId);
+  if ( messageId ) foundry.utils.setProperty(messageData, "flags.dnd5e-2014.originatingMessage", messageId);
 
   // Create a Chat Message
   if ( rolls?.length && chatMessage ) await CONFIG.Dice.DamageRoll.toMessage(rolls, messageData, { rollMode });

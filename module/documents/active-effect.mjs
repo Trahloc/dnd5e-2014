@@ -115,7 +115,7 @@ export default class ActiveEffect5e extends ActiveEffect {
 
   /** @inheritdoc */
   apply(actor, change) {
-    if ( change.key.startsWith("flags.dnd5e.") ) change = this._prepareFlagChange(actor, change);
+    if ( change.key.startsWith("flags.dnd5e-2014.") ) change = this._prepareFlagChange(actor, change);
 
     // Determine type using DataField
     let field = change.key.startsWith("system.")
@@ -279,7 +279,7 @@ export default class ActiveEffect5e extends ActiveEffect {
    */
   _prepareFlagChange(actor, change) {
     const { key, value } = change;
-    const data = CONFIG.DND5E.characterFlags[key.replace("flags.dnd5e.", "")];
+    const data = CONFIG.DND5E.characterFlags[key.replace("flags.dnd5e-2014.", "")];
     if ( !data ) return change;
 
     // Set flag to initial value if it isn't present
@@ -428,7 +428,7 @@ export default class ActiveEffect5e extends ActiveEffect {
         const itemData = (await fromUuid(uuid))?.toObject();
         if ( itemData ) {
           delete itemData._id;
-          foundry.utils.setProperty(itemData, "flags.dnd5e.enchantment", { origin: this.uuid });
+          foundry.utils.setProperty(itemData, "flags.dnd5e-2014.enchantment", { origin: this.uuid });
         }
         return itemData;
       }));
@@ -485,7 +485,7 @@ export default class ActiveEffect5e extends ActiveEffect {
   _onUpdate(data, options, userId) {
     super._onUpdate(data, options, userId);
     const originalLevel = foundry.utils.getProperty(options, "dnd5e.originalExhaustion");
-    const newLevel = foundry.utils.getProperty(data, "flags.dnd5e.exhaustionLevel");
+    const newLevel = foundry.utils.getProperty(data, "flags.dnd5e-2014.exhaustionLevel");
     const originalEncumbrance = foundry.utils.getProperty(options, "dnd5e.originalEncumbrance");
     const newEncumbrance = data.statuses?.[0];
     const name = this.name;
@@ -558,12 +558,12 @@ export default class ActiveEffect5e extends ActiveEffect {
         type: game.i18n.localize(`TYPES.Item.${item.type}`)
       }),
       duration: ActiveEffect5e.getEffectDurationFromItem(item),
-      "flags.dnd5e.itemData": item.actor.items.has(item.id) ? item.id : item.toObject(),
+      "flags.dnd5e-2014.itemData": item.actor.items.has(item.id) ? item.id : item.toObject(),
       origin: item.uuid,
       statuses: [statusEffect.id].concat(statusEffect.statuses ?? [])
     }, data, {inplace: false});
     delete effectData.id;
-    if ( item.type === "spell" ) effectData["flags.dnd5e.spellLevel"] = item.system.level;
+    if ( item.type === "spell" ) effectData["flags.dnd5e-2014.spellLevel"] = item.system.level;
 
     return effectData;
   }

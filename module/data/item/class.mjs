@@ -164,6 +164,6 @@ export default class ClassData extends ItemDataModel.mixin(ItemDescriptionTempla
       needsMigration = true;
     }
 
-    if ( needsMigration ) foundry.utils.setProperty(source, "flags.dnd5e.persistSourceMigration", true);
+    if ( needsMigration ) foundry.utils.setProperty(source, "flags.dnd5e-2014.persistSourceMigration", true);
   }
 }

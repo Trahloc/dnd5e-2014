@@ -20,7 +20,7 @@ export default Base => class extends Base {
   prepareData() {
     super.prepareData();
     if ( ("dnd5e" in this.flags) && this._systemFlagsDataModel ) {
-      this.flags.dnd5e = new this._systemFlagsDataModel(this.flags.dnd5e, { parent: this });
+      this.flags.dnd5e-2014 = new this._systemFlagsDataModel(this.flags.dnd5e-2014, { parent: this });
     }
   }
 
@@ -31,7 +31,7 @@ export default Base => class extends Base {
     if ( (scope === "dnd5e") && this._systemFlagsDataModel ) {
       let diff;
       const changes = foundry.utils.expandObject({ [key]: value });
-      if ( this.flags.dnd5e ) diff = this.flags.dnd5e.updateSource(changes, { dryRun: true });
+      if ( this.flags.dnd5e-2014 ) diff = this.flags.dnd5e-2014.updateSource(changes, { dryRun: true });
       else diff = new this._systemFlagsDataModel(changes, { parent: this }).toObject();
       return this.update({ flags: { dnd5e: diff } });
     }

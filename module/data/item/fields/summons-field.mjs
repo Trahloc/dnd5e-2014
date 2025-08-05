@@ -312,12 +312,12 @@ export class SummonsData extends foundry.abstract.DataModel {
     if ( actor.pack ) {
       // Template actor resides only in compendium, import the actor into the world and set the flag.
       return game.actors.importFromCompendium(game.packs.get(actor.pack), actor.id, {
-        "flags.dnd5e.summonedCopy": true
+        "flags.dnd5e-2014.summonedCopy": true
       });
     } else {
       // Template actor (linked) found in world, create a copy for this user's item.
       return actor.clone({
-        "flags.dnd5e.summonedCopy": true,
+        "flags.dnd5e-2014.summonedCopy": true,
         "flags.core.sourceId": actor.uuid,
         "_stats.compendiumSource": actor.uuid
       }, {save: true});
@@ -363,7 +363,7 @@ export class SummonsData extends foundry.abstract.DataModel {
     const prof = rollData.attributes?.prof ?? 0;
 
     // Add flags
-    actorUpdates["flags.dnd5e.summon"] = {
+    actorUpdates["flags.dnd5e-2014.summon"] = {
       level: this.relevantLevel,
       mod: rollData.mod,
       origin: this.item.uuid,

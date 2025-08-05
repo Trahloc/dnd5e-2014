@@ -108,7 +108,7 @@ export default class SpellData extends ItemDataModel.mixin(
   static _migrateComponentData(source) {
     const components = filteredKeys(source.system?.components ?? {});
     if ( components.length ) {
-      foundry.utils.setProperty(source, "flags.dnd5e.migratedProperties", components);
+      foundry.utils.setProperty(source, "flags.dnd5e-2014.migratedProperties", components);
     }
   }
 
@@ -192,7 +192,7 @@ export default class SpellData extends ItemDataModel.mixin(
 
   /** @inheritdoc */
   get _typeCriticalThreshold() {
-    return this.parent?.actor?.flags.dnd5e?.spellCriticalThreshold ?? Infinity;
+    return this.parent?.actor?.flags.dnd5e-2014?.spellCriticalThreshold ?? Infinity;
   }
 
   /* -------------------------------------------- */

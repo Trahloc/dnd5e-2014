@@ -1173,7 +1173,7 @@ async function rollDamage(event) {
     event,
     title,
     messageData: {
-      "flags.dnd5e": {
+      "flags.dnd5e-2014": {
         targets: Item5e._formatAttackTargets(),
         roll: {type: "damage"}
       },

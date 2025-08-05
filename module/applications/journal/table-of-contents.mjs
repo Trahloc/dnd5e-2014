@@ -57,7 +57,7 @@ export default class TableOfContentsCompendium extends Compendium {
         name: flags.title ?? entry.name,
         pages: Array.from(entry.pages).map(({ flags, id, name, sort }) => ({
           id, sort, flags,
-          name: flags.dnd5e?.title ?? name,
+          name: flags.dnd5e-2014?.title ?? name,
           entryId: entry.id
         }))
       };

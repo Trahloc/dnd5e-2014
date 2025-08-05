@@ -427,18 +427,18 @@ export function migrateItemData(item, migrationData, flags={}) {
   }
 
   // Migrate properties
-  const migratedProperties = foundry.utils.getProperty(item, "flags.dnd5e.migratedProperties");
+  const migratedProperties = foundry.utils.getProperty(item, "flags.dnd5e-2014.migratedProperties");
   if ( migratedProperties?.length ) {
     flags.persistSourceMigration = true;
     const properties = new Set(foundry.utils.getProperty(item, "system.properties") ?? [])
       .union(new Set(migratedProperties));
     updateData["system.properties"] = Array.from(properties);
-    updateData["flags.dnd5e.-=migratedProperties"] = null;
+    updateData["flags.dnd5e-2014.-=migratedProperties"] = null;
   }
 
-  if ( foundry.utils.getProperty(item, "flags.dnd5e.persistSourceMigration") ) {
+  if ( foundry.utils.getProperty(item, "flags.dnd5e-2014.persistSourceMigration") ) {
     flags.persistSourceMigration = true;
-    updateData["flags.dnd5e.-=persistSourceMigration"] = null;
+    updateData["flags.dnd5e-2014.-=persistSourceMigration"] = null;
   }
 
   return updateData;
@@ -794,7 +794,7 @@ function _migrateMacroCommands(macro, updateData) {
  */
 export async function purgeFlags(pack) {
   const cleanFlags = flags => {
-    const flags5e = flags.dnd5e || null;
+    const flags5e = flags.dnd5e-2014 || null;
     return flags5e ? {dnd5e: flags5e} : {};
   };
   await pack.configure({locked: false});

@@ -285,7 +285,7 @@ export default class EffectsElement extends HTMLElement {
       origin: isEnchantment ? undefined : this.document.uuid,
       "duration.rounds": li.dataset.effectType === "temporary" ? 1 : undefined,
       disabled: ["inactive", "enchantmentInactive"].includes(li.dataset.effectType),
-      "flags.dnd5e.type": isEnchantment ? "enchantment" : undefined
+      "flags.dnd5e-2014.type": isEnchantment ? "enchantment" : undefined
     }]);
   }
 

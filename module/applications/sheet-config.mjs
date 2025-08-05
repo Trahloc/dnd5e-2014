@@ -29,9 +29,9 @@ export default class SheetConfig5e extends DocumentSheetConfig {
     delete formData.defaultClass;
     this.object.update(formData);
 
-    if ( "flags.dnd5e.theme" in formData ) {
+    if ( "flags.dnd5e-2014.theme" in formData ) {
       const sheet = this.object.sheet.element?.[0];
-      if ( sheet ) setTheme(sheet, formData["flags.dnd5e.theme"]);
+      if ( sheet ) setTheme(sheet, formData["flags.dnd5e-2014.theme"]);
     }
   }
 }

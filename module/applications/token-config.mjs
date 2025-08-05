@@ -147,9 +147,9 @@ export default class TokenConfig5e extends TokenConfig {
   _getSubmitData(updateData={}) {
     const formData = super._getSubmitData(updateData);
 
-    formData["flags.dnd5e.tokenRing.effects"] = Object.keys(CONFIG.DND5E.tokenRings.effects).reduce((number, key) => {
-      const checked = formData[`flags.dnd5e.tokenRing.effects.${key}`];
-      delete formData[`flags.dnd5e.tokenRing.effects.${key}`];
+    formData["flags.dnd5e-2014.tokenRing.effects"] = Object.keys(CONFIG.DND5E.tokenRings.effects).reduce((number, key) => {
+      const checked = formData[`flags.dnd5e-2014.tokenRing.effects.${key}`];
+      delete formData[`flags.dnd5e-2014.tokenRing.effects.${key}`];
       if ( checked ) number |= CONFIG.Token.ringClass.effects[key];
       return number;
     }, 0x1);
@@ -162,7 +162,7 @@ export default class TokenConfig5e extends TokenConfig {
   /** @inheritDoc */
   _previewChanges(change) {
     if ( change && (this.preview instanceof TokenDocument5e) && (game.release.generation < 12) ) {
-      const flags = foundry.utils.getProperty(foundry.utils.expandObject(change), "flags.dnd5e.tokenRing") ?? {};
+      const flags = foundry.utils.getProperty(foundry.utils.expandObject(change), "flags.dnd5e-2014.tokenRing") ?? {};
       const redraw = ("textures" in flags) || ("enabled" in flags);
       if ( redraw ) this.preview.object.renderFlags.set({ redraw });
       else this.preview.object.ring.configureVisuals({...flags});
