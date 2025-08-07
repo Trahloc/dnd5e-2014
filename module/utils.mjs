@@ -492,18 +492,44 @@ function concealSection(conceal, options) {
  * Register custom Handlebars helpers used by 5e.
  */
 export function registerHandlebarsHelpers() {
-  Handlebars.registerHelper({
+  // Primary helper definitions using dnd5e-2014 namespace
+  const helpers = {
     getProperty: foundry.utils.getProperty,
-    "dnd5e-concealSection": concealSection,
-    "dnd5e-dataset": dataset,
-    "dnd5e-formatCR": formatCR,
-    "dnd5e-formatModifier": formatModifier,
-    "dnd5e-groupedSelectOptions": groupedSelectOptions,
-    "dnd5e-itemContext": itemContext,
-    "dnd5e-linkForUuid": (uuid, options) => linkForUuid(uuid, options.hash),
-    "dnd5e-numberFormat": (context, options) => formatNumber(context, options.hash),
-    "dnd5e-textFormat": formatText
-  });
+    "dnd5e-2014-concealSection": concealSection,
+    "dnd5e-2014-dataset": dataset,
+    "dnd5e-2014-formatCR": formatCR,
+    "dnd5e-2014-formatModifier": formatModifier,
+    "dnd5e-2014-groupedSelectOptions": groupedSelectOptions,
+    "dnd5e-2014-itemContext": itemContext,
+    "dnd5e-2014-linkForUuid": (uuid, options) => linkForUuid(uuid, options.hash),
+    "dnd5e-2014-numberFormat": (context, options) => formatNumber(context, options.hash),
+    "dnd5e-2014-textFormat": formatText
+  };
+
+  // Universal compatibility: Auto-create dnd5e-* aliases that redirect to dnd5e-2014-*
+  for (const [helperName, helperFunction] of Object.entries(helpers)) {
+    if (helperName.startsWith("dnd5e-2014-")) {
+      const legacyName = helperName.replace("dnd5e-2014-", "dnd5e-");
+      helpers[legacyName] = helperFunction;
+    }
+  }
+
+  // Register all helpers (primary + legacy aliases)
+  Handlebars.registerHelper(helpers);
+
+  // Additional Universal Fallback: Catch any missed dnd5e-* helpers at runtime
+  const originalRegisterHelper = Handlebars.registerHelper;
+  Handlebars.registerHelper = function(name, fn) {
+    // If someone tries to register a dnd5e-* helper and we already have a dnd5e-2014-* version
+    if (typeof name === "string" && name.startsWith("dnd5e-") && !name.startsWith("dnd5e-2014-")) {
+      const modernName = name.replace("dnd5e-", "dnd5e-2014-");
+      if (Handlebars.helpers[modernName]) {
+        // Redirect the legacy helper to use our modern version
+        return originalRegisterHelper.call(this, name, Handlebars.helpers[modernName]);
+      }
+    }
+    return originalRegisterHelper.apply(this, arguments);
+  };
 }
 
 /* -------------------------------------------- */
