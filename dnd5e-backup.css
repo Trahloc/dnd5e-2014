@@ -2,10 +2,6 @@
 /* ----------------------------------------- */
 /*  Fonts                                    */
 /* ----------------------------------------- */
-/* === CSS LOAD TEST === */
-body { background-color: #ff0000 !important; }
-/* ================== */
-
 @font-face {
   font-family: 'Modesto Condensed';
   font-style: normal;
