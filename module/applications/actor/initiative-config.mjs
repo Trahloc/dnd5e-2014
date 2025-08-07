@@ -28,7 +28,7 @@ export default class ActorInitiativeConfig extends BaseConfigSheet {
   getData(options={}) {
     const source = this.document.toObject();
     const init = source.system.attributes.init || {};
-    const flags = source.flags.dnd5e-2014 || {};
+    const flags = source.flags["dnd5e-2014"] || {};
     return {
       ability: init.ability,
       abilities: CONFIG.DND5E.abilities,
@@ -43,11 +43,11 @@ export default class ActorInitiativeConfig extends BaseConfigSheet {
   /** @inheritDoc */
   _getSubmitData(updateData={}) {
     const formData = super._getSubmitData(updateData);
-    formData.flags = {dnd5e: {}};
+    formData.flags = { dnd5e: {}, ["dnd5e-2014"]: {} };
     for ( const flag of ["initiativeAlert", "initiativeAdv"] ) {
       const k = `flags.dnd5e-2014.${flag}`;
-      if ( formData[k] ) formData.flags.dnd5e-2014[flag] = true;
-      else formData.flags.dnd5e-2014[`-=${flag}`] = null;
+      if ( formData[k] ) formData.flags["dnd5e-2014"][flag] = true;
+      else formData.flags["dnd5e-2014"][`-=${flag}`] = null;
       delete formData[k];
     }
     return formData;

@@ -172,7 +172,7 @@ export default class WeaponData extends ItemDataModel.mixin(
 
   /** @inheritdoc */
   get _typeCriticalThreshold() {
-    return this.parent?.actor?.flags.dnd5e-2014?.weaponCriticalThreshold ?? Infinity;
+    return this.parent?.actor?.flags?.["dnd5e-2014"]?.weaponCriticalThreshold ?? Infinity;
   }
 
   /* -------------------------------------------- */

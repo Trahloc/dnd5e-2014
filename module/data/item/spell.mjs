@@ -192,7 +192,7 @@ export default class SpellData extends ItemDataModel.mixin(
 
   /** @inheritdoc */
   get _typeCriticalThreshold() {
-    return this.parent?.actor?.flags.dnd5e-2014?.spellCriticalThreshold ?? Infinity;
+    return this.parent?.actor?.flags?.["dnd5e-2014"]?.spellCriticalThreshold ?? Infinity;
   }
 
   /* -------------------------------------------- */

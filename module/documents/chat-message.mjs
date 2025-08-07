@@ -29,7 +29,7 @@ export default class ChatMessage5e extends ChatMessage {
    * @type {boolean}
    */
   get canApplyDamage() {
-    const type = this.flags.dnd5e-2014?.roll?.type;
+    const type = this.flags["dnd5e-2014"]?.roll?.type;
     if ( type && (type !== "damage") ) return false;
     return this.isRoll && this.isContentVisible && !!canvas.tokens?.controlled.length;
   }
@@ -41,7 +41,7 @@ export default class ChatMessage5e extends ChatMessage {
    * @type {boolean}
    */
   get canSelectTargets() {
-    if ( this.flags.dnd5e-2014?.roll?.type !== "attack" ) return false;
+    if ( this.flags["dnd5e-2014"]?.roll?.type !== "attack" ) return false;
     return this.isRoll && this.isContentVisible;
   }
 
@@ -49,7 +49,7 @@ export default class ChatMessage5e extends ChatMessage {
 
   /** @inheritDoc */
   get isRoll() {
-    return super.isRoll && !this.flags.dnd5e-2014?.rest;
+    return super.isRoll && !this.flags["dnd5e-2014"]?.rest;
   }
 
   /* -------------------------------------------- */

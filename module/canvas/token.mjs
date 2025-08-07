@@ -125,7 +125,7 @@ export default class Token5e extends Token {
     if ( !foundry.utils.hasProperty(data, "flags.dnd5e-2014.tokenRing") ) return;
 
     // Do we need to trigger a full redraw? We need to do so if a token ring texture has been updated
-    const dataFlag = data.flags.dnd5e-2014.tokenRing;
+    const dataFlag = data.flags?.["dnd5e-2014"]?.tokenRing;
     const redraw = ("textures" in dataFlag) || ("enabled" in dataFlag);
     if ( redraw ) return this.renderFlags.set({redraw});
 

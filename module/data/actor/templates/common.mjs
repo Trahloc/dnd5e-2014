@@ -125,7 +125,7 @@ export default class CommonTemplate extends ActorDataModel.mixin(CurrencyTemplat
    * @param {object} [options.originalSaves]  Original ability data for transformed actors.
    */
   prepareAbilities({ rollData={}, originalSaves }={}) {
-    const flags = this.parent.flags.dnd5e-2014 ?? {};
+    const flags = this.parent.flags?.["dnd5e-2014"] ?? {};
     const prof = this.attributes?.prof ?? 0;
     const checkBonus = simplifyBonus(this.bonuses?.abilities?.check, rollData);
     const saveBonus = simplifyBonus(this.bonuses?.abilities?.save, rollData);

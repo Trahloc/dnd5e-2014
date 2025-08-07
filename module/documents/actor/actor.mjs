@@ -405,7 +405,7 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
     skillData, rollData, originalSkills, globalBonuses,
     globalCheckBonus, globalSkillBonus, ability
   }={}) {
-    const flags = this.flags.dnd5e-2014 ?? {};
+    const flags = this.flags["dnd5e-2014"] ?? {};
 
     skillData ??= foundry.utils.deepClone(this.system.skills[skillId]);
     rollData ??= this.getRollData();
@@ -466,7 +466,7 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
    */
   _prepareTools(bonusData, globalBonuses, checkBonus) {
     if ( this.type === "vehicle" ) return;
-    const flags = this.flags.dnd5e-2014 ?? {};
+    const flags = this.flags["dnd5e-2014"] ?? {};
     for ( const tool of Object.values(this.system.tools) ) {
       const ability = this.system.abilities[tool.ability];
       const baseBonus = simplifyBonus(tool.bonuses.check, bonusData);
@@ -587,7 +587,7 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
    */
   _prepareInitiative(bonusData, globalCheckBonus=0) {
     const init = this.system.attributes.init ??= {};
-    const flags = this.flags.dnd5e-2014 || {};
+    const flags = this.flags["dnd5e-2014"] || {};
 
     // Compute initiative modifier
     const abilityId = init.ability || CONFIG.DND5E.defaultAbilities.initiative;
@@ -1870,7 +1870,7 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
     const init = this.system.attributes?.init;
     const abilityId = init?.ability || CONFIG.DND5E.defaultAbilities.initiative;
     const data = this.getRollData();
-    const flags = this.flags.dnd5e-2014 || {};
+    const flags = this.flags?.["dnd5e-2014"] || {};
     if ( flags.initiativeAdv ) options.advantageMode ??= dnd5e.dice.D20Roll.ADV_MODE.ADVANTAGE;
 
     // Standard initiative formula
@@ -2826,8 +2826,8 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
     let originalSaves = null;
     let originalSkills = null;
     if ( this.isPolymorphed ) {
-      const transformOptions = this.flags.dnd5e-2014?.transformOptions;
-      const original = game.actors?.get(this.flags.dnd5e-2014?.originalActor);
+      const transformOptions = this.flags["dnd5e-2014"]?.transformOptions;
+      const original = game.actors?.get(this.flags["dnd5e-2014"]?.originalActor);
       if ( original ) {
         if ( transformOptions.mergeSaves ) originalSaves = original.system.abilities;
         if ( transformOptions.mergeSkills ) originalSkills = original.system.skills;
@@ -2890,8 +2890,9 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
 
     // Get the original Actor data and the new source data
     const o = this.toObject();
-    o.flags.dnd5e-2014 = o.flags.dnd5e-2014 || {};
-    o.flags.dnd5e-2014.transformOptions = {mergeSkills, mergeSaves};
+    o.flags = o.flags || {};
+    o.flags["dnd5e-2014"] = o.flags["dnd5e-2014"] || {};
+    o.flags["dnd5e-2014"].transformOptions = {mergeSkills, mergeSaves};
     const source = target.toObject();
 
     if ( keepSelf ) {
@@ -3027,8 +3028,14 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
     }
 
     // Set new data flags
-    if ( !this.isPolymorphed || !d.flags.dnd5e-2014.originalActor ) d.flags.dnd5e-2014.originalActor = this.id;
-    d.flags.dnd5e-2014.isPolymorphed = true;
+    if ( !this.isPolymorphed || !(d.flags?.["dnd5e-2014"])?.originalActor ) {
+      d.flags = d.flags || {};
+      d.flags["dnd5e-2014"] = d.flags["dnd5e-2014"] || {};
+      d.flags["dnd5e-2014"].originalActor = this.id;
+    }
+    d.flags = d.flags || {};
+    d.flags["dnd5e-2014"] = d.flags["dnd5e-2014"] || {};
+    d.flags["dnd5e-2014"].isPolymorphed = true;
 
     // Gather previous actor data
     const previousActorIds = this.getFlag("dnd5e-2014", "previousActorIds") || [];

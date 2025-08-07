@@ -1011,7 +1011,7 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
         // TODO: Filter packs by additional system setting
 
         // If types are set and specified in compendium flag, only include those that include the correct types
-        && (!types.size || !p.metadata.flags.dnd5e-2014?.types || new Set(p.metadata.flags.dnd5e-2014.types).intersects(types)))
+        && (!types.size || !p.metadata.flags?.["dnd5e-2014"]?.types || new Set(p.metadata.flags["dnd5e-2014"].types).intersects(types)))
 
       // Generate an index based on the needed fields
       .map(async p => await Promise.all((await p.getIndex({ fields: Array.from(indexFields) })

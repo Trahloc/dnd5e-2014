@@ -66,9 +66,9 @@ export default class EnchantmentConfig extends DocumentSheet {
       flags: effect.flags,
       collapsed: this.expandedEnchantments.get(effect.id) ? "" : "collapsed",
       riderEffects: effects.map(({ id, name }) => ({
-        id, name, selected: effect.flags.dnd5e-2014?.enchantment?.riders?.effect?.includes(id) ? "selected" : ""
+        id, name, selected: effect.flags?.["dnd5e-2014"]?.enchantment?.riders?.effect?.includes(id) ? "selected" : ""
       })),
-      riderItems: effect.flags.dnd5e-2014?.enchantment?.riders?.item?.join(",") ?? ""
+      riderItems: effect.flags?.["dnd5e-2014"]?.enchantment?.riders?.item?.join(",") ?? ""
     }));
 
     return context;

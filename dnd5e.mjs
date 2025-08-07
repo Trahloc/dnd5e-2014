@@ -576,7 +576,7 @@ Hooks.once("ready", function() {
 
   // Determine whether a system migration is required and feasible
   if ( !game.user.isGM ) return;
-  const cv = game.settings.get("dnd5e-2014", "systemMigrationVersion") || game.world.flags.dnd5e-2014?.version;
+  const cv = game.settings.get("dnd5e-2014", "systemMigrationVersion") || game.world.flags["dnd5e-2014"]?.version;
   const totalDocuments = game.actors.size + game.scenes.size + game.items.size;
   if ( !cv && totalDocuments === 0 ) return game.settings.set("dnd5e-2014", "systemMigrationVersion", game.system.version);
   if ( cv && !foundry.utils.isNewerVersion(game.system.flags.needsMigrationVersion, cv) ) return;

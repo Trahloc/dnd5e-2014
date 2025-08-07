@@ -111,7 +111,7 @@ export default class ActorSheetFlags extends BaseConfigSheet {
     const src = actor.toObject();
 
     // Unset any flags which are "false"
-    const flags = updateData.flags.dnd5e-2014;
+    const flags = updateData.flags["dnd5e-2014"];
     for ( let [k, v] of Object.entries(flags) ) {
       if ( [undefined, null, "", false, 0].includes(v) ) {
         delete flags[k];

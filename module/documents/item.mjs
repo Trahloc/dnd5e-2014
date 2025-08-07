@@ -1168,7 +1168,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
       const limit = this.actor.system.attributes?.concentration?.limit ?? 0;
       if ( limit && (limit <= effects.size) ) {
         const id = effects.find(e => {
-          const data = e.flags.dnd5e-2014?.itemData ?? {};
+          const data = e.flags?.["dnd5e-2014"]?.itemData ?? {};
           return (data === this.id) || (data._id === this.id);
         })?.id ?? effects.first()?.id ?? null;
         config.endConcentration = id;
@@ -1542,7 +1542,7 @@ export default class Item5e extends SystemDocumentMixin(Item) {
    * @returns {Promise<D20Roll|null>}       A Promise which resolves to the created Roll instance
    */
   async rollAttack(options={}) {
-    const flags = this.actor.flags.dnd5e-2014 ?? {};
+    const flags = this.actor.flags?.["dnd5e-2014"] ?? {};
     if ( !this.hasAttack ) throw new Error("You may not place an Attack Roll with this Item.");
     let title = `${this.name} - ${game.i18n.localize("DND5E.AttackRoll")}`;
 
