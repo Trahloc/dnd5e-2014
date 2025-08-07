@@ -18,7 +18,7 @@ export default class ProficiencyConfig extends BaseConfigSheet {
   /** @inheritdoc */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["dnd5e"],
+      classes: game.dnd5e.getCSSClasses(),
       template: "systems/dnd5e-2014/templates/apps/proficiency-config.hbs",
       width: 500,
       height: "auto"

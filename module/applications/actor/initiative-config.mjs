@@ -8,7 +8,7 @@ export default class ActorInitiativeConfig extends BaseConfigSheet {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["dnd5e"],
+      classes: game.dnd5e.getCSSClasses(),
       template: "systems/dnd5e-2014/templates/apps/initiative-config.hbs",
       width: 360,
       height: "auto"

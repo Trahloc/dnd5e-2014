@@ -9,7 +9,7 @@ export default class ActorSheetFlags extends BaseConfigSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "actor-flags",
-      classes: ["dnd5e"],
+      classes: game.dnd5e.getCSSClasses(),
       template: "systems/dnd5e-2014/templates/apps/actor-flags.hbs",
       width: 500,
       closeOnSubmit: true

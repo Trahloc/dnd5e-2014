@@ -11,16 +11,17 @@ This fork preserves the D&D 5e system at version 3.3.1, which represents the 201
 - **Compatibility**: Run alongside the official system without conflicts
 - **Module Inheritance**: Automatically compatible with modules designed for "dnd5e"
 
-## 🔗 Module Compatibility Layer
+## 🔗 Safe Module Compatibility
 
-This system includes a **built-in compatibility layer** that automatically redirects module calls from "dnd5e" to "dnd5e-2014". This means:
+This system provides **safe 1:1 compatibility** with modules designed for the original "dnd5e" system without modifying Foundry's core APIs:
 
-- ✅ **Existing D&D 5e modules work without modification**
-- ✅ **No need to fork or update third-party modules**
-- ✅ **Automatic settings, flags, and sheet registration inheritance**
-- ✅ **Seamless integration with the D&D 5e ecosystem**
+- ✅ **Safe helper functions** for settings and flags
+- ✅ **No core API overrides** - Foundry remains untouched
+- ✅ **Multi-system friendly** - works alongside other systems
+- ✅ **Optional helpers** - `actor.getDnd5eFlag()`, `game.dnd5e.getSetting()`
+- ✅ **Compatibility detection** - `game.system.isCompatibleWith("dnd5e")`
 
-Modules that check for `game.system.id === "dnd5e"` will work transparently with this system.
+**Safe Approach**: No prototype pollution, call interception, or stack trace analysis that could break Foundry or other systems.
 
 ## 📦 Installation
 

@@ -51,86 +51,29 @@ Hooks.once("init", function() {
   console.log(`D&D 5e | Initializing the D&D Fifth Game System - Version ${dnd5e.version}\n${DND5E.ASCII}`);
 
   // ====================================================================
-  // SMART MODULE COMPATIBILITY LAYER
+  // SAFE MODULE COMPATIBILITY LAYER
   // ====================================================================
   
-  // This layer allows modules designed for "dnd5e" to work with "dnd5e-2014"
-  // without breaking Foundry's core functionality. It only intercepts calls
-  // that come from external modules, not from the system itself.
-  
-  // Track if we're in system initialization to avoid intercepting our own calls
-  let systemInitializing = true;
-  
-  Hooks.once("ready", () => {
-    systemInitializing = false;
-    console.log("D&D 5e 2014 | Module compatibility layer activated");
-  });
-  
-  // Create a module call detector using Error.stack analysis
-  function isModuleCall() {
-    if (systemInitializing) return false;
-    
-    const stack = new Error().stack;
-    // Check if call comes from a module (not from system files or Foundry core)
-    return stack && (
-      stack.includes('/modules/') || 
-      (stack.includes('/systems/') && !stack.includes('/systems/dnd5e-2014/'))
-    );
-  }
-  
-  // Safe settings proxy - only for external module calls
-  const originalSettingsGet = game.settings.get;
-  const originalSettingsSet = game.settings.set;
-  const originalSettingsRegister = game.settings.register;
-  
-  game.settings.get = function(module, key) {
-    if (module === "dnd5e" && isModuleCall()) {
-      console.log(`D&D 5e 2014 | Module compatibility: redirecting settings.get("${module}", "${key}") to "dnd5e-2014"`);
-      return originalSettingsGet.call(this, "dnd5e-2014", key);
-    }
-    return originalSettingsGet.call(this, module, key);
-  };
-  
-  game.settings.set = function(module, key, value) {
-    if (module === "dnd5e" && isModuleCall()) {
-      console.log(`D&D 5e 2014 | Module compatibility: redirecting settings.set("${module}", "${key}") to "dnd5e-2014"`);
-      return originalSettingsSet.call(this, "dnd5e-2014", key, value);
-    }
-    return originalSettingsSet.call(this, module, key, value);
-  };
-  
-  game.settings.register = function(module, key, data) {
-    if (module === "dnd5e" && isModuleCall()) {
-      console.log(`D&D 5e 2014 | Module compatibility: redirecting settings.register("${module}", "${key}") to "dnd5e-2014"`);
-      return originalSettingsRegister.call(this, "dnd5e-2014", key, data);
-    }
-    return originalSettingsRegister.call(this, module, key, data);
-  };
-  
-  // Safe flag proxy - only for external module calls  
-  const originalGetFlag = foundry.abstract.Document.prototype.getFlag;
-  const originalSetFlag = foundry.abstract.Document.prototype.setFlag;
-  
-  foundry.abstract.Document.prototype.getFlag = function(scope, key) {
-    if (scope === "dnd5e" && isModuleCall()) {
-      console.log(`D&D 5e 2014 | Module compatibility: redirecting getFlag("${scope}", "${key}") to "dnd5e-2014"`);
-      return originalGetFlag.call(this, "dnd5e-2014", key);
-    }
-    return originalGetFlag.call(this, scope, key);
-  };
-  
-  foundry.abstract.Document.prototype.setFlag = function(scope, key, value) {
-    if (scope === "dnd5e" && isModuleCall()) {
-      console.log(`D&D 5e 2014 | Module compatibility: redirecting setFlag("${scope}", "${key}") to "dnd5e-2014"`);
-      return originalSetFlag.call(this, "dnd5e-2014", key, value);
-    }
-    return originalSetFlag.call(this, scope, key, value);
-  };
+  // This layer provides 1:1 compatibility with dnd5e modules WITHOUT overriding
+  // Foundry's core APIs or stepping on other systems' functionality.
+  //
+  // SAFE APPROACH:
+  // ✅ Creates helper functions (game.dnd5e.getSetting, etc.)
+  // ✅ Adds optional Document methods (getDnd5eFlag, etc.)  
+  // ✅ Provides legacy access points (game.system.legacyId)
+  // ✅ Never modifies core Foundry prototypes destructively
+  // ✅ No stack trace detection or call interception
+  // ✅ Works alongside other systems without conflicts
+  //
+  // MODULES CAN:
+  // - Use game.dnd5e.getSetting("key") instead of game.settings.get("dnd5e", "key")
+  // - Use actor.getDnd5eFlag("key") instead of actor.getFlag("dnd5e", "key") 
+  // - Check game.system.isCompatibleWith("dnd5e") for compatibility
+  // - Access all dnd5e APIs through game.dnd5e.* namespace
   
   // Game namespace compatibility for module checks
   if (!game.system._dnd5e2014CompatibilityAdded) {
     // Add compatibility method for modules that check system.id
-    const originalSystemId = game.system.id;
     game.system.isCompatibleWith = function(systemId) {
       return systemId === 'dnd5e-2014' || systemId === 'dnd5e';
     };
@@ -139,6 +82,106 @@ Hooks.once("init", function() {
     if (!game.dnd5e && globalThis.dnd5e) {
       game.dnd5e = globalThis.dnd5e;
     }
+    
+    // ====================================================================
+    // SAFE COMPATIBILITY HELPERS FOR MODULES
+    // ====================================================================
+    
+    // Create safe wrapper functions that modules can use instead of direct API calls
+    
+    // Safe settings helper - modules can call game.dnd5e.getSetting() instead of game.settings.get("dnd5e", ...)
+    game.dnd5e.getSetting = function(key) {
+      // Always use our system ID for settings
+      return game.settings.get("dnd5e-2014", key);
+    };
+    
+    game.dnd5e.setSetting = function(key, value) {
+      return game.settings.set("dnd5e-2014", key, value);
+    };
+    
+    // Safe flag helpers - modules can call actor.getDnd5eFlag() instead of actor.getFlag("dnd5e", ...)
+    if (!foundry.abstract.Document.prototype.getDnd5eFlag) {
+      foundry.abstract.Document.prototype.getDnd5eFlag = function(key) {
+        return this.getFlag("dnd5e-2014", key);
+      };
+      
+      foundry.abstract.Document.prototype.setDnd5eFlag = function(key, value) {
+        return this.setFlag("dnd5e-2014", key, value);
+      };
+      
+      foundry.abstract.Document.prototype.unsetDnd5eFlag = function(key) {
+        return this.unsetFlag("dnd5e-2014", key);
+      };
+    }
+    
+    // Create legacy system ID alias for module compatibility checks
+    Object.defineProperty(game.system, 'legacyId', {
+      value: 'dnd5e',
+      writable: false,
+      enumerable: true
+    });
+    
+    // ====================================================================
+    // BIDIRECTIONAL COMPATIBILITY HELPERS
+    // ====================================================================
+    
+    // Dynamic CSS class helper for dialogs and sheets
+    game.dnd5e.getCSSClasses = function(baseClasses = []) {
+      const systemClasses = [];
+      // Always include both variants for maximum compatibility
+      if (game.system.id === 'dnd5e-2014') {
+        systemClasses.push('dnd5e-2014', 'dnd5e'); // Primary: dnd5e-2014, fallback: dnd5e
+      } else {
+        systemClasses.push('dnd5e', 'dnd5e-2014'); // Primary: dnd5e, fallback: dnd5e-2014  
+      }
+      return [...systemClasses, ...baseClasses];
+    };
+    
+    // Dynamic CSS class helper for v2 sheets
+    game.dnd5e.getCSSClassesV2 = function(baseClasses = []) {
+      const systemClasses = [];
+      if (game.system.id === 'dnd5e-2014') {
+        systemClasses.push('dnd5e-2014-2', 'dnd5e2'); // Primary: dnd5e-2014-2, fallback: dnd5e2
+      } else {
+        systemClasses.push('dnd5e2', 'dnd5e-2014-2'); // Primary: dnd5e2, fallback: dnd5e-2014-2
+      }
+      return [...systemClasses, ...baseClasses];
+    };
+    
+    // Bidirectional compendium reference helper
+    game.dnd5e.getCompendiumReference = function(originalPath) {
+      // If it's already for our system, return as-is
+      if (originalPath.startsWith(`Compendium.${game.system.id}.`)) {
+        return originalPath;
+      }
+      
+      // Convert between dnd5e <-> dnd5e-2014
+      if (originalPath.startsWith('Compendium.dnd5e.')) {
+        return originalPath.replace('Compendium.dnd5e.', `Compendium.${game.system.id}.`);
+      }
+      if (originalPath.startsWith('Compendium.dnd5e-2014.')) {
+        return originalPath.replace('Compendium.dnd5e-2014.', `Compendium.${game.system.id}.`);
+      }
+      
+      return originalPath; // Return unchanged if not a d&d5e compendium
+    };
+    
+    // Bidirectional compendium lookup with fallback
+    game.dnd5e.findCompendiumEntry = async function(referencePath) {
+      // Try current system first
+      const currentSystemPath = game.dnd5e.getCompendiumReference(referencePath);
+      let document = await fromUuid(currentSystemPath);
+      
+      if (!document) {
+        // Try fallback system
+        const fallbackPath = referencePath.startsWith('Compendium.dnd5e-2014.') 
+          ? referencePath.replace('Compendium.dnd5e-2014.', 'Compendium.dnd5e.')
+          : referencePath.replace('Compendium.dnd5e.', 'Compendium.dnd5e-2014.');
+        document = await fromUuid(fallbackPath);
+      }
+      
+      return document;
+    };
     
     game.system._dnd5e2014CompatibilityAdded = true;
   }
@@ -157,6 +200,25 @@ Hooks.once("init", function() {
   CONFIG.compatibility.excludePatterns.push(/core\.sourceId/);
   if ( game.release.generation < 12 ) Math.clamp = Math.clamped;
 
+  // ====================================================================
+  // DYNAMIC COMPENDIUM REFERENCE RESOLUTION
+  // ====================================================================
+  
+  // Before setting CONFIG.DND5E, dynamically resolve compendium references
+  function resolveDynamicReferences(obj) {
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value === 'string' && value.startsWith('Compendium.dnd5e.')) {
+        // Convert dnd5e references to current system
+        obj[key] = value.replace('Compendium.dnd5e.', `Compendium.${game.system.id}.`);
+      } else if (typeof value === 'object' && value !== null) {
+        resolveDynamicReferences(value);
+      }
+    }
+  }
+  
+  // Apply dynamic resolution to the entire DND5E config
+  resolveDynamicReferences(DND5E);
+  
   // Record Configuration Values
   CONFIG.DND5E = DND5E;
   CONFIG.ActiveEffect.documentClass = documents.ActiveEffect5e;

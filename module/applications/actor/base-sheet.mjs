@@ -891,7 +891,7 @@ export default class ActorSheet5e extends ActorSheetMixin(ActorSheet) {
         }
       }
     }, {
-      classes: ["dialog", "dnd5e", "polymorph"],
+      classes: game.dnd5e.getCSSClasses(["dialog", "polymorph"]),
       width: 900,
       template: "systems/dnd5e-2014/templates/apps/polymorph-prompt.hbs"
     }).render(true);
