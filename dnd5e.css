@@ -1,11 +1,17 @@
+/* === SUPER AGGRESSIVE DIAGNOSTIC === */
+/* This FORCES visibility regardless of sheet type */
+* { border: 2px solid #ff0000 !important; }
+body { background: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #ffffff 10px, #ffffff 20px) !important; }
+.window-content { background: #00ff00 !important; opacity: 0.8 !important; }
+.application { border: 5px solid #0000ff !important; }
+.window-app { border: 5px solid #ffff00 !important; }
+.actor-sheet { border: 5px solid #ff00ff !important; }
+/* ==================== */
+
 /* Common Styles */
 /* ----------------------------------------- */
 /*  Fonts                                    */
 /* ----------------------------------------- */
-/* === CSS LOAD TEST === */
-body { background-color: #ff0000 !important; }
-/* ================== */
-
 @font-face {
   font-family: 'Modesto Condensed';
   font-style: normal;
