@@ -51,128 +51,13 @@ Hooks.once("init", function() {
   console.log(`D&D 5e | Initializing the D&D Fifth Game System - Version ${dnd5e.version}\n${DND5E.ASCII}`);
 
   // ====================================================================
-  // COMPATIBILITY LAYER: Make dnd5e-2014 inherit from "dnd5e" for modules
+  // REMOVED: Aggressive compatibility layer was interfering with core Foundry
   // ====================================================================
   
-  // Create a settings proxy that redirects "dnd5e" calls to "dnd5e-2014"
-  const originalGet = game.settings.get;
-  const originalSet = game.settings.set;
-  const originalRegister = game.settings.register;
-  const originalRegisterMenu = game.settings.registerMenu;
-  
-  game.settings.get = function(module, key) {
-    if (module === "dnd5e") module = "dnd5e-2014";
-    return originalGet.call(this, module, key);
-  };
-  
-  game.settings.set = function(module, key, value) {
-    if (module === "dnd5e") module = "dnd5e-2014";
-    return originalSet.call(this, module, key, value);
-  };
-  
-  game.settings.register = function(module, key, data) {
-    if (module === "dnd5e") module = "dnd5e-2014";
-    return originalRegister.call(this, module, key, data);
-  };
-  
-  game.settings.registerMenu = function(module, key, data) {
-    if (module === "dnd5e") module = "dnd5e-2014";
-    return originalRegisterMenu.call(this, module, key, data);
-  };
-  
-  // Create flag operation proxies for document flag compatibility
-  const originalGetFlag = foundry.abstract.Document.prototype.getFlag;
-  const originalSetFlag = foundry.abstract.Document.prototype.setFlag;
-  const originalUnsetFlag = foundry.abstract.Document.prototype.unsetFlag;
-  
-  foundry.abstract.Document.prototype.getFlag = function(scope, key) {
-    if (scope === "dnd5e") scope = "dnd5e-2014";
-    return originalGetFlag.call(this, scope, key);
-  };
-  
-  foundry.abstract.Document.prototype.setFlag = function(scope, key, value) {
-    if (scope === "dnd5e") scope = "dnd5e-2014";
-    return originalSetFlag.call(this, scope, key, value);
-  };
-  
-  foundry.abstract.Document.prototype.unsetFlag = function(scope, key) {
-    if (scope === "dnd5e") scope = "dnd5e-2014";
-    return originalUnsetFlag.call(this, scope, key);
-  };
-  
-  // Register sheet compatibility for modules that register sheets for "dnd5e"
-  const originalRegisterSheet = DocumentSheetConfig.registerSheet;
-  DocumentSheetConfig.registerSheet = function(documentClass, scope, sheetClass, options) {
-    if (scope === "dnd5e") scope = "dnd5e-2014";
-    return originalRegisterSheet.call(this, documentClass, scope, sheetClass, options);
-  };
-  
-  // Also proxy the legacy Actors.registerSheet method
-  if (Actors.registerSheet) {
-    const originalActorRegisterSheet = Actors.registerSheet;
-    Actors.registerSheet = function(scope, sheetClass, options) {
-      if (scope === "dnd5e") scope = "dnd5e-2014";
-      return originalActorRegisterSheet.call(this, scope, sheetClass, options);
-    };
-  }
-  
-  // Add world flag compatibility for migration and other world-level operations
-  if (game.world?.flags) {
-    Object.defineProperty(game.world.flags, 'dnd5e', {
-      get() { return this['dnd5e-2014']; },
-      set(value) { this['dnd5e-2014'] = value; },
-      enumerable: true,
-      configurable: true
-    });
-  }
-  
-  // Add hook compatibility for modules listening to dnd5e-specific hooks
-  const originalCallAll = Hooks.callAll;
-  Hooks.callAll = function(hook, ...args) {
-    // Call the original hook
-    const result = originalCallAll.call(this, hook, ...args);
-    
-    // If it's a dnd5e-2014 hook, also trigger it as a dnd5e hook for module compatibility
-    if (hook.startsWith('dnd5e-2014.')) {
-      const legacyHook = hook.replace('dnd5e-2014.', 'dnd5e.');
-      originalCallAll.call(this, legacyHook, ...args);
-    }
-    
-    return result;
-  };
-  
-  // Add system detection compatibility for modules checking game.system.id
-  const originalSystemGetter = Object.getOwnPropertyDescriptor(game, 'system') || { value: game.system };
-  Object.defineProperty(game, 'system', {
-    get() {
-      const system = originalSystemGetter.get ? originalSystemGetter.get.call(this) : originalSystemGetter.value;
-      // Create a proxy that responds to both IDs
-      return new Proxy(system, {
-        get(target, prop) {
-          if (prop === 'id') {
-            // Return the actual ID but also set up compatibility
-            const actualId = target[prop];
-            // Store both for compatibility checks
-            if (!target._compatibilityIds) {
-              target._compatibilityIds = [actualId, 'dnd5e'];
-            }
-            return actualId;
-          }
-          return target[prop];
-        }
-      });
-    },
-    configurable: true
-  });
-  
-  // Add a compatibility check function for modules
-  if (!game.system.isCompatible) {
-    game.system.isCompatible = function(systemId) {
-      return systemId === 'dnd5e-2014' || systemId === 'dnd5e';
-    };
-  }
-  
-  console.log("D&D 5e 2014 | Compatibility layer active - modules targeting 'dnd5e' will work with 'dnd5e-2014'");
+  // REMOVED: Compatibility layer was breaking Foundry core functionality
+
+
+
 
   // TODO: Remove when v11 support is dropped.
   CONFIG.compatibility.excludePatterns.push(/filePicker|select/);
