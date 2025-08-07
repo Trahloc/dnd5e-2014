@@ -51,10 +51,99 @@ Hooks.once("init", function() {
   console.log(`D&D 5e | Initializing the D&D Fifth Game System - Version ${dnd5e.version}\n${DND5E.ASCII}`);
 
   // ====================================================================
-  // REMOVED: Aggressive compatibility layer was interfering with core Foundry
+  // SMART MODULE COMPATIBILITY LAYER
   // ====================================================================
   
-  // REMOVED: Compatibility layer was breaking Foundry core functionality
+  // This layer allows modules designed for "dnd5e" to work with "dnd5e-2014"
+  // without breaking Foundry's core functionality. It only intercepts calls
+  // that come from external modules, not from the system itself.
+  
+  // Track if we're in system initialization to avoid intercepting our own calls
+  let systemInitializing = true;
+  
+  Hooks.once("ready", () => {
+    systemInitializing = false;
+    console.log("D&D 5e 2014 | Module compatibility layer activated");
+  });
+  
+  // Create a module call detector using Error.stack analysis
+  function isModuleCall() {
+    if (systemInitializing) return false;
+    
+    const stack = new Error().stack;
+    // Check if call comes from a module (not from system files or Foundry core)
+    return stack && (
+      stack.includes('/modules/') || 
+      (stack.includes('/systems/') && !stack.includes('/systems/dnd5e-2014/'))
+    );
+  }
+  
+  // Safe settings proxy - only for external module calls
+  const originalSettingsGet = game.settings.get;
+  const originalSettingsSet = game.settings.set;
+  const originalSettingsRegister = game.settings.register;
+  
+  game.settings.get = function(module, key) {
+    if (module === "dnd5e" && isModuleCall()) {
+      console.log(`D&D 5e 2014 | Module compatibility: redirecting settings.get("${module}", "${key}") to "dnd5e-2014"`);
+      return originalSettingsGet.call(this, "dnd5e-2014", key);
+    }
+    return originalSettingsGet.call(this, module, key);
+  };
+  
+  game.settings.set = function(module, key, value) {
+    if (module === "dnd5e" && isModuleCall()) {
+      console.log(`D&D 5e 2014 | Module compatibility: redirecting settings.set("${module}", "${key}") to "dnd5e-2014"`);
+      return originalSettingsSet.call(this, "dnd5e-2014", key, value);
+    }
+    return originalSettingsSet.call(this, module, key, value);
+  };
+  
+  game.settings.register = function(module, key, data) {
+    if (module === "dnd5e" && isModuleCall()) {
+      console.log(`D&D 5e 2014 | Module compatibility: redirecting settings.register("${module}", "${key}") to "dnd5e-2014"`);
+      return originalSettingsRegister.call(this, "dnd5e-2014", key, data);
+    }
+    return originalSettingsRegister.call(this, module, key, data);
+  };
+  
+  // Safe flag proxy - only for external module calls  
+  const originalGetFlag = foundry.abstract.Document.prototype.getFlag;
+  const originalSetFlag = foundry.abstract.Document.prototype.setFlag;
+  
+  foundry.abstract.Document.prototype.getFlag = function(scope, key) {
+    if (scope === "dnd5e" && isModuleCall()) {
+      console.log(`D&D 5e 2014 | Module compatibility: redirecting getFlag("${scope}", "${key}") to "dnd5e-2014"`);
+      return originalGetFlag.call(this, "dnd5e-2014", key);
+    }
+    return originalGetFlag.call(this, scope, key);
+  };
+  
+  foundry.abstract.Document.prototype.setFlag = function(scope, key, value) {
+    if (scope === "dnd5e" && isModuleCall()) {
+      console.log(`D&D 5e 2014 | Module compatibility: redirecting setFlag("${scope}", "${key}") to "dnd5e-2014"`);
+      return originalSetFlag.call(this, "dnd5e-2014", key, value);
+    }
+    return originalSetFlag.call(this, scope, key, value);
+  };
+  
+  // Game namespace compatibility for module checks
+  if (!game.system._dnd5e2014CompatibilityAdded) {
+    // Add compatibility method for modules that check system.id
+    const originalSystemId = game.system.id;
+    game.system.isCompatibleWith = function(systemId) {
+      return systemId === 'dnd5e-2014' || systemId === 'dnd5e';
+    };
+    
+    // Provide legacy game.dnd5e access point for modules
+    if (!game.dnd5e && globalThis.dnd5e) {
+      game.dnd5e = globalThis.dnd5e;
+    }
+    
+    game.system._dnd5e2014CompatibilityAdded = true;
+  }
+  
+  console.log("D&D 5e 2014 | System loaded with smart module compatibility");
 
 
 
@@ -126,7 +215,7 @@ Hooks.once("init", function() {
     types: ["character"],
     label: "DND5E.SheetClassCharacterLegacy"
   });
-  DocumentSheetConfig.registerSheet(Actor, "dnd5e", applications.actor.ActorSheet5eCharacter2, {
+  DocumentSheetConfig.registerSheet(Actor, "dnd5e-2014", applications.actor.ActorSheet5eCharacter2, {
     types: ["character"],
     makeDefault: true,
     label: "DND5E.SheetClassCharacter"
@@ -136,7 +225,7 @@ Hooks.once("init", function() {
     makeDefault: true,
     label: "DND5E.SheetClassNPCLegacy"
   });
-  DocumentSheetConfig.registerSheet(Actor, "dnd5e", applications.actor.ActorSheet5eNPC2, {
+  DocumentSheetConfig.registerSheet(Actor, "dnd5e-2014", applications.actor.ActorSheet5eNPC2, {
     types: ["npc"],
     makeDefault: true,
     label: "DND5E.SheetClassNPC"
@@ -153,41 +242,41 @@ Hooks.once("init", function() {
   });
 
   DocumentSheetConfig.unregisterSheet(Item, "core", ItemSheet);
-  DocumentSheetConfig.registerSheet(Item, "dnd5e", applications.item.ItemSheet5e, {
+  DocumentSheetConfig.registerSheet(Item, "dnd5e-2014", applications.item.ItemSheet5e, {
     makeDefault: true,
     label: "DND5E.SheetClassItem"
   });
   DocumentSheetConfig.unregisterSheet(Item, "dnd5e-2014", applications.item.ItemSheet5e, { types: ["container"] });
-  DocumentSheetConfig.registerSheet(Item, "dnd5e", applications.item.ContainerSheet, {
+  DocumentSheetConfig.registerSheet(Item, "dnd5e-2014", applications.item.ContainerSheet, {
     makeDefault: true,
     types: ["container"],
     label: "DND5E.SheetClassContainer"
   });
 
-  DocumentSheetConfig.registerSheet(JournalEntry, "dnd5e", applications.journal.JournalSheet5e, {
+  DocumentSheetConfig.registerSheet(JournalEntry, "dnd5e-2014", applications.journal.JournalSheet5e, {
     makeDefault: true,
     label: "DND5E.SheetClassJournalEntry"
   });
-  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e", applications.journal.JournalClassPageSheet, {
+  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e-2014", applications.journal.JournalClassPageSheet, {
     label: "DND5E.SheetClassClassSummary",
     types: ["class", "subclass"]
   });
-  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e", applications.journal.JournalMapLocationPageSheet, {
+  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e-2014", applications.journal.JournalMapLocationPageSheet, {
     label: "DND5E.SheetClassMapLocation",
     types: ["map"]
   });
-  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e", applications.journal.JournalRulePageSheet, {
+  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e-2014", applications.journal.JournalRulePageSheet, {
     label: "DND5E.SheetClassRule",
     types: ["rule"]
   });
-  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e", applications.journal.JournalSpellListPageSheet, {
+  DocumentSheetConfig.registerSheet(JournalEntryPage, "dnd5e-2014", applications.journal.JournalSpellListPageSheet, {
     label: "DND5E.SheetClassSpellList",
     types: ["spells"]
   });
 
   CONFIG.Token.prototypeSheetClass = applications.TokenConfig5e;
   DocumentSheetConfig.unregisterSheet(TokenDocument, "core", TokenConfig);
-  DocumentSheetConfig.registerSheet(TokenDocument, "dnd5e", applications.TokenConfig5e, {
+  DocumentSheetConfig.registerSheet(TokenDocument, "dnd5e-2014", applications.TokenConfig5e, {
     label: "DND5E.SheetClassToken"
   });
 

@@ -3157,9 +3157,9 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
         parent: canvas.scene, keepId: true, render: true
       });
       if ( isOriginalActor ) {
-        await this.unsetFlag("dnd5e", "isPolymorphed");
-        await this.unsetFlag("dnd5e", "previousActorIds");
-        await this.token.unsetFlag("dnd5e", "previousActorData");
+        await this.unsetFlag("dnd5e-2014", "isPolymorphed");
+        await this.unsetFlag("dnd5e-2014", "previousActorIds");
+        await this.token.unsetFlag("dnd5e-2014", "previousActorData");
       }
       if ( isRendered && renderSheet ) token.actor?.sheet?.render(true);
       return token;
@@ -3189,8 +3189,8 @@ export default class Actor5e extends SystemDocumentMixin(Actor) {
       await canvas.scene.updateEmbeddedDocuments("Token", tokenUpdates, { diff: false, recursive: false });
     }
     if ( isOriginalActor ) {
-      await this.unsetFlag("dnd5e", "isPolymorphed");
-      await this.unsetFlag("dnd5e", "previousActorIds");
+      await this.unsetFlag("dnd5e-2014", "isPolymorphed");
+      await this.unsetFlag("dnd5e-2014", "previousActorIds");
     }
 
     // Delete the polymorphed version(s) of the actor, if possible
