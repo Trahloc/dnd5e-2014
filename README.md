@@ -9,6 +9,18 @@ This fork preserves the D&D 5e system at version 3.3.1, which represents the 201
 - **Legacy Campaigns**: Keep your existing campaigns running with the original ruleset
 - **Preference for 2014 Rules**: Continue using the familiar 2014 edition mechanics
 - **Compatibility**: Run alongside the official system without conflicts
+- **Module Inheritance**: Automatically compatible with modules designed for "dnd5e"
+
+## 🔗 Module Compatibility Layer
+
+This system includes a **built-in compatibility layer** that automatically redirects module calls from "dnd5e" to "dnd5e-2014". This means:
+
+- ✅ **Existing D&D 5e modules work without modification**
+- ✅ **No need to fork or update third-party modules**
+- ✅ **Automatic settings, flags, and sheet registration inheritance**
+- ✅ **Seamless integration with the D&D 5e ecosystem**
+
+Modules that check for `game.system.id === "dnd5e"` will work transparently with this system.
 
 ## 📦 Installation
 
