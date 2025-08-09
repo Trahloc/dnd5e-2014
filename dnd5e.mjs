@@ -137,16 +137,10 @@ Hooks.once("init", function() {
       return [...systemClasses, ...baseClasses];
     };
     
-    // Dynamic CSS class helper for v2 sheets
-    game.dnd5e.getCSSClassesV2 = function(baseClasses = []) {
-      const systemClasses = [];
-      if (game.system.id === 'dnd5e-2014') {
-        systemClasses.push('dnd5e-2014-2', 'dnd5e2'); // Primary: dnd5e-2014-2, fallback: dnd5e2
-      } else {
-        systemClasses.push('dnd5e2', 'dnd5e-2014-2'); // Primary: dnd5e2, fallback: dnd5e-2014-2
-      }
-      return [...systemClasses, ...baseClasses];
-    };
+  // Dynamic CSS class helper for v2 sheets (kept for modules, but our sheets use explicit classes)
+  game.dnd5e.getCSSClassesV2 = function(baseClasses = []) {
+    return ['dnd5e2', ...baseClasses];
+  };
     
     // Bidirectional compendium reference helper
     game.dnd5e.getCompendiumReference = function(originalPath) {
@@ -192,12 +186,15 @@ Hooks.once("init", function() {
 
 
   // TODO: Remove when v11 support is dropped.
-  CONFIG.compatibility.excludePatterns.push(/filePicker|select/);
-  CONFIG.compatibility.excludePatterns.push(/foundry\.dice\.terms/);
-  CONFIG.compatibility.excludePatterns.push(
-    /aggregateDamageRoll|configureDamage|preprocessFormula|simplifyRollFormula/
-  );
-  CONFIG.compatibility.excludePatterns.push(/core\.sourceId/);
+  // Be defensive: some Foundry versions may not expose CONFIG.compatibility.
+  if ( CONFIG?.compatibility?.excludePatterns ) {
+    CONFIG.compatibility.excludePatterns.push(/filePicker|select/);
+    CONFIG.compatibility.excludePatterns.push(/foundry\.dice\.terms/);
+    CONFIG.compatibility.excludePatterns.push(
+      /aggregateDamageRoll|configureDamage|preprocessFormula|simplifyRollFormula/
+    );
+    CONFIG.compatibility.excludePatterns.push(/core\.sourceId/);
+  }
   if ( game.release.generation < 12 ) Math.clamp = Math.clamped;
 
   // ====================================================================
@@ -599,10 +596,20 @@ Hooks.once("ready", function() {
 
 Hooks.on("canvasInit", gameCanvas => {
   if ( game.release.generation < 12 ) {
-    gameCanvas.grid.diagonalRule = game.settings.get("dnd5e-2014", "diagonalMovement");
-    SquareGrid.prototype.measureDistances = canvas.measureDistances;
+    try {
+      gameCanvas.grid.diagonalRule = game.settings.get("dnd5e-2014", "diagonalMovement");
+      if ( globalThis.SquareGrid?.prototype && canvas?.measureDistances ) {
+        SquareGrid.prototype.measureDistances = canvas.measureDistances;
+      }
+    } catch (e) {
+      console.warn("D&D 5e 2014 | canvasInit compatibility guard triggered:", e);
+    }
   }
-  CONFIG.Token.ringClass.pushToLoad(gameCanvas.loadTexturesOptions.additionalSources);
+  try {
+    CONFIG.Token.ringClass.pushToLoad(gameCanvas.loadTexturesOptions.additionalSources);
+  } catch (e) {
+    console.warn("D&D 5e 2014 | Token ring loader guard triggered:", e);
+  }
 });
 
 /* -------------------------------------------- */
@@ -619,16 +626,20 @@ Hooks.on("canvasDraw", gameCanvas => {
 /* -------------------------------------------- */
 
 Hooks.on("renderPause", (app, [html]) => {
+  if (!html) return;
   html.classList.add("dnd5e2");
   const img = html.querySelector("img");
-  img.src = "systems/dnd5e-2014/ui/official/ampersand.svg";
-  img.className = "";
+  if (img) {
+    img.src = "systems/dnd5e-2014/ui/official/ampersand.svg";
+    img.className = "";
+  }
 });
 
 Hooks.on("renderSettings", (app, [html]) => {
-  const details = html.querySelector("#game-details");
-  const pip = details.querySelector(".system-info .update");
-  details.querySelector(".system").remove();
+  const details = html.querySelector?.("#game-details");
+  const pip = details?.querySelector?.(".system-info .update");
+  const sysRow = details?.querySelector?.(".system");
+  sysRow?.remove();
 
   const heading = document.createElement("div");
   heading.classList.add("dnd5e2", "sidebar-heading");
@@ -653,7 +664,7 @@ Hooks.on("renderSettings", (app, [html]) => {
       </li>
     </ul>
   `;
-  details.insertAdjacentElement("afterend", heading);
+  details?.insertAdjacentElement?.("afterend", heading);
 
   const badge = document.createElement("div");
   badge.classList.add("dnd5e2", "system-badge");
@@ -661,8 +672,8 @@ Hooks.on("renderSettings", (app, [html]) => {
     <img src="systems/dnd5e-2014/ui/official/dnd-badge-32.webp" data-tooltip="${dnd5e.title}" alt="${dnd5e.title}">
     <span class="system-info">${dnd5e.version}</span>
   `;
-  if ( pip ) badge.querySelector(".system-info").insertAdjacentElement("beforeend", pip);
-  heading.insertAdjacentElement("afterend", badge);
+  if ( pip ) badge.querySelector(".system-info")?.insertAdjacentElement("beforeend", pip);
+  heading.insertAdjacentElement?.("afterend", badge);
 });
 
 /* -------------------------------------------- */
